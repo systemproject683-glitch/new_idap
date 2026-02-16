@@ -61,6 +61,7 @@ Route::middleware(['auth'])->prefix('development-objectives')->name('development
     Route::put('/{objective}/status', [DevelopmentObjectiveController::class, 'updateStatus'])->name('update-status');
     Route::delete('/{objective}', [DevelopmentObjectiveController::class, 'destroy'])->name('destroy');
     Route::post('/{objective}/upload-file', [DevelopmentObjectiveController::class, 'uploadFile'])->name('upload-file');
+    Route::post('/{objective}/update-max-files', [DevelopmentObjectiveController::class, 'updateMaxFiles'])->name('update-max-files');
     Route::delete('/{objective}/delete-file', [DevelopmentObjectiveController::class, 'deleteFile'])->name('delete-file');
 });
 

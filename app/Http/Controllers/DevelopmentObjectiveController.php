@@ -34,6 +34,7 @@ class DevelopmentObjectiveController extends Controller
         $request->validate([
             'objective' => 'required|string',
             'action_plan' => 'required|string',
+            'max_files' => 'required|integer|min:1|max:3',
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ]);
 
@@ -62,18 +63,8 @@ class DevelopmentObjectiveController extends Controller
             }
         }
         
-        // Get max_files from admin objective if this is not a custom objective
-        $maxFiles = 1; // Default for custom objectives
-        if ($objectiveName !== 'Other') {
-            $adminObjective = DevelopmentObjective::where('is_admin_created', true)
-                ->whereNull('user_id')
-                ->where('objective', $objectiveName)
-                ->first();
-            
-            if ($adminObjective) {
-                $maxFiles = $adminObjective->max_files;
-            }
-        }
+        // Get max_files from faculty selection
+        $maxFiles = $request->max_files;
         
         // Handle file upload
         $filePath = null;
@@ -167,7 +158,6 @@ class DevelopmentObjectiveController extends Controller
         $request->validate([
             'objective' => 'required|string',
             'action_plan' => 'required|string',
-            'max_files' => 'required|integer|min:1|max:10',
         ]);
 
         DevelopmentObjective::create([
@@ -176,7 +166,6 @@ class DevelopmentObjectiveController extends Controller
             'action_plan' => $request->action_plan,
             'status' => 'pending',
             'is_admin_created' => true,
-            'max_files' => $request->max_files,
         ]);
 
         return redirect()->route('admin.development-objectives')
@@ -261,6 +250,32 @@ class DevelopmentObjectiveController extends Controller
 
         return redirect()->route('development-objectives.index')
             ->with('error', 'No file uploaded.');
+    }
+
+    /**
+     * Update max_files for an existing development objective.
+     */
+    public function updateMaxFiles(Request $request, DevelopmentObjective $objective)
+    {
+        // Ensure the objective belongs to the authenticated user
+        if ($objective->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
+        }
+
+        // Only allow updating max_files if no files have been uploaded yet
+        if ($objective->files()->count() > 0) {
+            return response()->json(['success' => false, 'message' => 'Cannot update file limit after files have been uploaded.'], 400);
+        }
+
+        $request->validate([
+            'max_files' => 'required|integer|min:1|max:3',
+        ]);
+
+        $objective->update([
+            'max_files' => $request->max_files,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'File limit updated successfully.']);
     }
 
     /**
