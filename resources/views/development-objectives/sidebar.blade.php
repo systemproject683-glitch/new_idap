@@ -1,6 +1,9 @@
 <!-- Faculty Member Sidebar -->
-<aside class="w-64 text-white h-screen fixed left-0 top-0 overflow-y-auto" style="background: linear-gradient(135deg, #ff8c42 0%, #ffd166 50%, #ff6b35 100%);">
-    <div class="p-4 h-full flex flex-col" style="background-color: rgba(0, 0, 0, 0.3);">
+<aside
+  class="w-64 text-white h-screen fixed left-0 top-0 overflow-y-auto"
+    style="background-image: url('{{ asset('images/sidebar-bg.jpg') }}'); background-size: cover; background-position: 55% 45%;"
+>
+    <div class="p-4 h-full flex flex-col" style="background-color: rgba(255, 107, 53, 0.35);">
         <div class="text-center mb-6">
             <h1 class="text-3xl font-bold text-white">CEIT</h1>
             <p class="text-sm text-white">Individual Development and Action Plan System</p>

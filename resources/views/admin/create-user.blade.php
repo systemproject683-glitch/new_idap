@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #f5f5f5;
+            background-color: #fff7ed;
         }
         .sidebar {
             background-color: #585858;
