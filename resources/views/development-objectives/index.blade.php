@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Development Objectives - IDAP System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -265,6 +266,29 @@
                                                                     $percentage = ($approvedFileCount / $objective->max_files) * 100;
                                                                 @endphp
                                                                 
+                                                                <!-- File Count Selection (only show if no files uploaded yet) -->
+                                                                @if($fileCount == 0)
+                                                                    <div class="mb-3">
+                                                                        <label for="max_files_{{ $objective->id }}" class="block text-gray-700 text-sm font-medium mb-2">
+                                            Select Number of Files to Upload
+                                        </label>
+                                        <select 
+                                            id="max_files_{{ $objective->id }}" 
+                                            name="max_files" 
+                                            class="input-field w-full px-4 py-3 text-gray-700 mb-2"
+                                            onchange="updateMaxFiles({{ $objective->id }}, this.value)"
+                                        >
+                                            <option value="">Select number of files</option>
+                                            <option value="1">1 File</option>
+                                            <option value="2">2 Files</option>
+                                            <option value="3">3 Files</option>
+                                        </select>
+                                        <p class="text-xs text-gray-500 mb-2">
+                                            Select how many files you plan to upload for this objective
+                                        </p>
+                                    </div>
+                                                                @endif
+                                                                
                                                                 <!-- Progress Bar -->
                                                                 <div class="mb-3">
                                                                     <div class="flex justify-between items-center mb-1">
@@ -508,6 +532,30 @@
                                         @enderror
                                     </div>
 
+                                    <!-- File Count Selection -->
+                                    <div class="mb-5">
+                                        <label for="max_files" class="block text-gray-700 text-sm font-medium mb-2">
+                                            Number of Files to Upload
+                                        </label>
+                                        <select 
+                                            id="max_files" 
+                                            name="max_files" 
+                                            class="input-field w-full px-4 py-3 text-gray-700"
+                                            required
+                                        >
+                                            <option value="">Select number of files</option>
+                                            <option value="1">1 File</option>
+                                            <option value="2">2 Files</option>
+                                            <option value="3">3 Files</option>
+                                        </select>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            Select how many files you plan to upload for this objective
+                                        </p>
+                                        @error('max_files')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
                                     <!-- Submit Button -->
                                     <div>
                                         <button type="submit" class="btn-primary text-white w-full px-6 py-3 rounded transition">
@@ -563,6 +611,42 @@ const adminObjectives = @json($adminObjectives->map(function($obj) {
         'action_plan' => $obj->action_plan
     ];
 }));
+
+function updateMaxFiles(objectiveId, maxFiles) {
+    if (!maxFiles) return;
+    
+    // Show confirmation dialog
+    if (confirm(`Are you sure you want to set the maximum file limit to ${maxFiles} files for this objective?`)) {
+        // Send AJAX request to update max_files
+        fetch(`/development-objectives/${objectiveId}/update-max-files`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ max_files: maxFiles })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reload the page to show updated max_files
+                window.location.reload();
+            } else {
+                alert('Error updating file limit: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating file limit');
+        });
+    } else {
+        // Reset the select to empty if cancelled
+        const select = document.getElementById(`max_files_${objectiveId}`);
+        if (select) {
+            select.value = '';
+        }
+    }
+}
 
 function updateActionPlan() {
     const objectiveSelect = document.getElementById('objective');

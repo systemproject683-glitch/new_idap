@@ -81,7 +81,7 @@
                     <div class="p-6">
                         <form method="POST" action="{{ route('admin.development-objectives.store') }}">
                             @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Objective Field -->
                                 <div class="mb-6">
                                     <label for="objective" class="block text-gray-700 text-sm font-medium mb-2">
@@ -114,36 +114,6 @@
                                         required
                                     ></textarea>
                                     @error('action_plan')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                
-                                <!-- Max Files Field -->
-                                <div class="mb-6">
-                                    <label for="max_files" class="block text-gray-700 text-sm font-medium mb-2">
-                                        Maximum Files per Faculty Member
-                                    </label>
-                                    <select 
-                                        id="max_files" 
-                                        name="max_files" 
-                                        class="input-field w-full px-4 py-3 text-gray-700"
-                                        required
-                                    >
-                                        <option value="1">1 File</option>
-                                        <option value="2">2 Files</option>
-                                        <option value="3">3 Files</option>
-                                        <option value="4">4 Files</option>
-                                        <option value="5">5 Files</option>
-                                        <option value="6">6 Files</option>
-                                        <option value="7">7 Files</option>
-                                        <option value="8">8 Files</option>
-                                        <option value="9">9 Files</option>
-                                        <option value="10">10 Files</option>
-                                    </select>
-                                    <p class="text-xs text-gray-500 mt-1">
-                                        Maximum number of files faculty members can upload for this objective
-                                    </p>
-                                    @error('max_files')
                                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -183,9 +153,6 @@
                                                     </span>
                                                     <span class="text-sm text-blue-600">
                                                         Available to all faculty members
-                                                    </span>
-                                                    <span class="text-sm text-orange-600 font-medium">
-                                                        Max Files: {{ $objective->max_files }}
                                                     </span>
                                                 </div>
                                             </div>
