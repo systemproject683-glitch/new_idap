@@ -45,7 +45,7 @@
             <!-- Header -->
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-                <p class="text-gray-600 mt-2">Welcome, {{ Auth::guard('admin')->user()->name }}!</p>
+                <p class="text-gray-600 mt-2">Welcome, {{ Auth::guard('admin')->user()->first_name }} {{ Auth::guard('admin')->user()->last_name }}!</p>
             </div>
 
             <!-- Success Message -->
@@ -101,7 +101,7 @@
                                     @foreach($users as $user)
                                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                                             <td class="py-3 px-4">{{ $user->id }}</td>
-                                            <td class="py-3 px-4">{{ $user->name }}</td>
+                                            <td class="py-3 px-4">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                             <td class="py-3 px-4">{{ $user->email }}</td>
                                             <td class="py-3 px-4">
                                                 @switch($user->department)

@@ -57,23 +57,63 @@
                     <form method="POST" action="{{ route('admin.store.user') }}">
                         @csrf
                         
-                        <!-- Name Field -->
-                        <div class="mb-6">
-                            <label for="name" class="block text-gray-700 text-sm font-medium mb-2">
-                                Full Name
-                            </label>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                name="name" 
-                                class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
-                                placeholder="Enter user's full name"
-                                value="{{ old('name') }}"
-                                required
-                            >
-                            @error('name')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
+                        <!-- Name Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <!-- First Name Field -->
+                            <div>
+                                <label for="first_name" class="block text-gray-700 text-sm font-medium mb-2">
+                                    First Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="first_name" 
+                                    name="first_name" 
+                                    class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
+                                    placeholder="Enter first name"
+                                    value="{{ old('first_name') }}"
+                                    required
+                                >
+                                @error('first_name')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <!-- Middle Name Field -->
+                            <div>
+                                <label for="middle_name" class="block text-gray-700 text-sm font-medium mb-2">
+                                    Middle Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="middle_name" 
+                                    name="middle_name" 
+                                    class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
+                                    placeholder="Enter middle name (optional)"
+                                    value="{{ old('middle_name') }}"
+                                >
+                                @error('middle_name')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
+                            <!-- Last Name Field -->
+                            <div>
+                                <label for="last_name" class="block text-gray-700 text-sm font-medium mb-2">
+                                    Last Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="last_name" 
+                                    name="last_name" 
+                                    class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
+                                    placeholder="Enter last name"
+                                    value="{{ old('last_name') }}"
+                                    required
+                                >
+                                @error('last_name')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
                         
                         <!-- Email Field -->

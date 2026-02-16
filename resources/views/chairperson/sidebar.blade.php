@@ -39,19 +39,21 @@
 
         @php
             $sidebarUser = auth()->user();
-            $sidebarName = $sidebarUser->name ?? 'Chairperson';
+            $sidebarName = $sidebarUser->first_name . ' ' . $sidebarUser->last_name ?? 'Chairperson';
             $sidebarDepartment = $sidebarUser->department ?? 'Department';
-            $nameParts = preg_split('/\s+/', trim($sidebarName));
+            
+            // Generate initials from first name and last name
+            $firstName = $sidebarUser->first_name ?? '';
+            $lastName = $sidebarUser->last_name ?? '';
             $initials = '';
-            foreach ($nameParts as $part) {
-                if ($part === '') {
-                    continue;
-                }
-                $initials .= strtoupper(substr($part, 0, 1));
-                if (strlen($initials) >= 2) {
-                    break;
-                }
+            
+            if (!empty($firstName)) {
+                $initials .= strtoupper(substr($firstName, 0, 1));
             }
+            if (!empty($lastName)) {
+                $initials .= strtoupper(substr($lastName, 0, 1));
+            }
+            
             if ($initials === '') {
                 $initials = 'C';
             }

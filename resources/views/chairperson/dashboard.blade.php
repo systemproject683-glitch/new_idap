@@ -55,7 +55,7 @@
                             </div>
                             <div class="text-right">
                                 <p class="text-sm text-gray-500">Welcome back,</p>
-                                <p class="text-lg font-medium text-gray-800">{{ Auth::user()->name }}</p>
+                                <p class="text-lg font-medium text-gray-800">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
                             </div>
                         </div>
                     </div>

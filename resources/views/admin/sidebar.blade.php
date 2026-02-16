@@ -46,19 +46,21 @@
 
         @php
             $sidebarUser = Auth::guard('admin')->user();
-            $sidebarName = $sidebarUser->name ?? 'Admin';
-            $sidebarDepartment = $sidebarUser->department ?? 'Administration';
-            $nameParts = preg_split('/\s+/', trim($sidebarName));
+            $sidebarName = $sidebarUser->first_name . ' ' . $sidebarUser->last_name ?? 'Admin';
+            $sidebarDepartment = $sidebarUser->department ?? 'Administrator';
+            
+            // Generate initials from first name and last name
+            $firstName = $sidebarUser->first_name ?? '';
+            $lastName = $sidebarUser->last_name ?? '';
             $initials = '';
-            foreach ($nameParts as $part) {
-                if ($part === '') {
-                    continue;
-                }
-                $initials .= strtoupper(substr($part, 0, 1));
-                if (strlen($initials) >= 2) {
-                    break;
-                }
+            
+            if (!empty($firstName)) {
+                $initials .= strtoupper(substr($firstName, 0, 1));
             }
+            if (!empty($lastName)) {
+                $initials .= strtoupper(substr($lastName, 0, 1));
+            }
+            
             if ($initials === '') {
                 $initials = 'A';
             }

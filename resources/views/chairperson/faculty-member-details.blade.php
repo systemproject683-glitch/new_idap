@@ -79,11 +79,11 @@
                         <div class="flex items-center">
                             <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-6">
                                 <span class="text-xl font-bold text-gray-600">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    {{ strtoupper(substr($user->first_name, 0, 1)) }}
                                 </span>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $user->name }}</h3>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</h3>
                                 <p class="text-gray-600">{{ $user->email }}</p>
                                 <div class="flex items-center gap-3 mt-2">
                                     <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">

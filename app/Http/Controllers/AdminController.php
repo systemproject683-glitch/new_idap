@@ -61,7 +61,9 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'department' => 'required|string|in:DAFE,DCEA,DCEEE,DIET,DIT',
             'role' => 'required|string|in:faculty,chairperson',
@@ -82,7 +84,9 @@ class AdminController extends Controller
         }
 
         User::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'department' => $request->department,
             'role' => $request->role,
@@ -95,13 +99,22 @@ class AdminController extends Controller
 
     public function editUser(User $user)
     {
+        // Debug: Log the user data
+        \Log::info('Edit user called with user:', $user->toArray());
+        
         return view('admin.edit-user', compact('user'));
     }
 
     public function updateUser(Request $request, User $user)
     {
+        // Debug: Log the incoming request data
+        \Log::info('Update user request data:', $request->all());
+        \Log::info('User data before update:', $user->toArray());
+        
         $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'department' => 'required|string|in:DAFE,DCEA,DCEEE,DIET,DIT',
             'role' => 'required|string|in:faculty,chairperson',
@@ -122,7 +135,9 @@ class AdminController extends Controller
         }
 
         $user->update([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'department' => $request->department,
             'role' => $request->role,
