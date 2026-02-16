@@ -24,7 +24,7 @@
         }
 
         :root {
-            --page-header-height: 72px;
+            --page-header-height: 84px;
             --page-header-gap: 16px;
         }
 
@@ -124,16 +124,77 @@
             font-weight: 600;
         }
         .status-pending {
-            background-color: #fef3c7;
-            color: #92400e;
+            background-color: #fff7ed;
+            color: #c2410c;
         }
         .status-in-progress {
-            background-color: #dbeafe;
-            color: #1e40af;
+            background-color: #ffedd5;
+            color: #9a3412;
         }
         .status-completed {
-            background-color: #d1fae5;
-            color: #065f46;
+            background-color: #fed7aa;
+            color: #7c2d12;
+        }
+        .custom-select {
+            position: relative;
+        }
+        .custom-select-native {
+            position: absolute;
+            inset: 0;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background-color: #ffffff;
+            text-align: left;
+            cursor: pointer;
+        }
+        .custom-select-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 4px);
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+            padding: 6px 0;
+            z-index: 30;
+            max-height: 240px;
+            overflow-y: auto;
+            display: none;
+        }
+        .custom-select.open .custom-select-menu {
+            display: block;
+        }
+        .custom-select-option {
+            display: block;
+            width: 100%;
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            color: #1f2937;
+            text-align: left;
+            background: transparent;
+            cursor: pointer;
+        }
+        .custom-select-option:hover,
+        .custom-select-option:focus {
+            background-color: #fed7aa;
+            color: #7c2d12;
+            outline: none;
+        }
+        .custom-select-group {
+            padding: 6px 16px 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #6b7280;
         }
     </style>
 </head>
@@ -147,8 +208,8 @@
             <div class="p-8 page-content">
                 <!-- Header -->
                 <div class="header-bar page-header-fixed">
-                    <h1 class="text-2xl font-bold text-gray-800">Development Objectives</h1>
-                    <p class="text-gray-600 mt-1">Manage your individual development action plan objectives</p>
+                    <h1 class="text-2xl font-bold text-gray-800 mt-0">Development Objectives / Target</h1>
+                    <p class="text-gray-600 mt-1 mb-0 leading-tight">Manage your individual development action plan objectives</p>
                 </div>
                 <div class="page-header-spacer"></div>
 
@@ -208,7 +269,7 @@
                                                                 <div class="mb-3">
                                                                     <div class="flex justify-between items-center mb-1">
                                                                         <label for="file_{{ $objective->id }}" class="block text-gray-700 text-sm font-medium">
-                                                                            Upload File/Certificate (Optional)
+                                                                            Upload File/Certificate 
                                                                         </label>
                                                                         <div class="flex items-center gap-2">
                                                                             <span class="text-xs text-gray-500">
@@ -220,10 +281,10 @@
                                                                                 </span>
                                                                             @endif
                                                                             <span class="text-xs font-medium
-                                                                                @if($percentage >= 100) text-green-600
-                                                                                @elseif($percentage >= 75) text-blue-600
-                                                                                @elseif($percentage >= 50) text-yellow-600
-                                                                                @else text-red-600
+                                                                                @if($percentage >= 100) text-orange-700
+                                                                                @elseif($percentage >= 75) text-orange-600
+                                                                                @elseif($percentage >= 50) text-orange-500
+                                                                                @else text-orange-400
                                                                                 @endif">
                                                                                 {{ round($percentage) }}% Complete
                                                                             </span>
@@ -232,7 +293,12 @@
                                                                     
                                                                     <!-- Progress Bar -->
                                                                     <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-                                                                        <div class="h-2 rounded-full transition-all duration-300 bg-green-500"
+                                                                        <div class="h-2 rounded-full transition-all duration-300
+                                                                            @if($percentage >= 100) bg-orange-500
+                                                                            @elseif($percentage >= 75) bg-orange-400
+                                                                            @elseif($percentage >= 50) bg-orange-300
+                                                                            @else bg-orange-200
+                                                                            @endif"
                                                                              style="width: {{ min($percentage, 100) }}%">
                                                                         </div>
                                                                     </div>
@@ -281,19 +347,19 @@
                                                                                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                                                                 </svg>
-                                                                                <a href="{{ asset('storage/' . $file->file_path) }}" 
-                                                                                   target="_blank" 
-                                                                                   class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                                                                          <a href="{{ asset('storage/' . $file->file_path) }}" 
+                                                                                                              target="_blank" 
+                                                                                                              class="text-orange-600 hover:text-orange-700 text-sm font-medium">
                                                                                     {{ $file->file_name }}
                                                                                 </a>
                                                                                 
                                                                                 <!-- Verification Status Badge -->
                                                                                 @if($file->verification_status === 'pending')
-                                                                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                                                                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
                                                                                         Pending Verification
                                                                                     </span>
                                                                                 @elseif($file->verification_status === 'approved')
-                                                                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                                                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-orange-200 text-orange-900">
                                                                                         ✓ Approved
                                                                                     </span>
                                                                                 @elseif($file->verification_status === 'rejected')
@@ -357,28 +423,51 @@
                                         <label for="objective" class="block text-gray-700 text-sm font-medium mb-2">
                                             Development Objective/Target
                                         </label>
-                                        <select 
-                                            id="objective" 
-                                            name="objective" 
-                                            class="input-field w-full px-4 py-3 text-gray-700"
-                                            required
-                                            onchange="updateActionPlan()"
-                                        >
-                                            <option value="">Select Objective</option>
-                                            @if(count($predefinedObjectives) > 0)
-                                                <optgroup label="Predefined Objectives">
-                                                    @foreach($predefinedObjectives as $objective => $actionPlan)
-                                                        <option value="{{ $objective }}">{{ $objective }}</option>
+                                        <div class="custom-select" data-custom-select="objective">
+                                            <select 
+                                                id="objective" 
+                                                name="objective" 
+                                                class="custom-select-native"
+                                                required
+                                                onchange="updateActionPlan()"
+                                            >
+                                                <option value="">Select Objective</option>
+                                                @if(count($predefinedObjectives) > 0)
+                                                    <optgroup label="Predefined Objectives">
+                                                        @foreach($predefinedObjectives as $objective => $actionPlan)
+                                                            <option value="{{ $objective }}">{{ $objective }}</option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endif
+                                                @if($adminObjectives->count() > 0)
+                                                    @foreach($adminObjectives as $objective)
+                                                        <option value="{{ $objective->objective }}">{{ $objective->objective }}</option>
                                                     @endforeach
-                                                </optgroup>
-                                            @endif
-                                            @if($adminObjectives->count() > 0)
-                                                @foreach($adminObjectives as $objective)
-                                                    <option value="{{ $objective->objective }}">{{ $objective->objective }}</option>
-                                                @endforeach
-                                            @endif
-                                            <option value="Other">Other (Specify your own objective)</option>
-                                        </select>
+                                                @endif
+                                                <option value="Other">Other (Specify your own objective)</option>
+                                            </select>
+                                            <button type="button" class="custom-select-trigger input-field w-full px-4 py-3 text-gray-700">
+                                                <span class="custom-select-label">Select Objective</span>
+                                                <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.96a.75.75 0 111.08 1.04l-4.24 4.52a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            <div class="custom-select-menu">
+                                                <button type="button" class="custom-select-option" data-select-value="">Select Objective</button>
+                                                @if(count($predefinedObjectives) > 0)
+                                                    <div class="custom-select-group">Predefined Objectives</div>
+                                                    @foreach($predefinedObjectives as $objective => $actionPlan)
+                                                        <button type="button" class="custom-select-option" data-select-value="{{ $objective }}">{{ $objective }}</button>
+                                                    @endforeach
+                                                @endif
+                                                @if($adminObjectives->count() > 0)
+                                                    @foreach($adminObjectives as $objective)
+                                                        <button type="button" class="custom-select-option" data-select-value="{{ $objective->objective }}">{{ $objective->objective }}</button>
+                                                    @endforeach
+                                                @endif
+                                                <button type="button" class="custom-select-option" data-select-value="Other">Other (Specify your own objective)</button>
+                                            </div>
+                                        </div>
                                         @error('objective')
                                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                         @enderror
@@ -514,15 +603,64 @@ function updateActionPlan() {
     actionPlanTextarea.value = '';
 }
 
+function initCustomSelect() {
+    const select = document.getElementById('objective');
+    const wrapper = document.querySelector('[data-custom-select="objective"]');
+    if (!select || !wrapper) {
+        return;
+    }
+
+    const trigger = wrapper.querySelector('.custom-select-trigger');
+    const label = wrapper.querySelector('.custom-select-label');
+    const menu = wrapper.querySelector('.custom-select-menu');
+    const options = wrapper.querySelectorAll('[data-select-value]');
+
+    const updateLabel = () => {
+        const selected = select.options[select.selectedIndex];
+        label.textContent = selected && selected.textContent.trim()
+            ? selected.textContent.trim()
+            : 'Select Objective';
+    };
+
+    const closeMenu = () => {
+        wrapper.classList.remove('open');
+    };
+
+    trigger.addEventListener('click', () => {
+        wrapper.classList.toggle('open');
+    });
+
+    options.forEach((option) => {
+        option.addEventListener('click', () => {
+            const value = option.getAttribute('data-select-value') || '';
+            select.value = value;
+            select.dispatchEvent(new Event('change'));
+            updateLabel();
+            closeMenu();
+        });
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!wrapper.contains(event.target)) {
+            closeMenu();
+        }
+    });
+
+    updateLabel();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const alertPopup = document.getElementById('alert-popup');
     if (!alertPopup) {
+        initCustomSelect();
         return;
     }
 
     setTimeout(() => {
         alertPopup.classList.add('alert-hidden');
     }, 2000);
+
+    initCustomSelect();
 });
 
 </script>
