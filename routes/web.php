@@ -7,7 +7,7 @@ use App\Http\Controllers\ChairpersonController;
 use App\Http\Controllers\FileVerificationController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // Authentication Routes
@@ -15,15 +15,13 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/logout-success', function () {
-    return view('auth.logout-success');
-})->name('logout.success');
 
 Route::post('/login', [AdminController::class, 'authenticate'])->name('login.submit');
 
 // Admin Routes (Protected)
-Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['admin', 'nocache'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'userManagement'])->name('users');
     Route::get('/create-user', [AdminController::class, 'createUser'])->name('create.user');
     Route::post('/store-user', [AdminController::class, 'storeUser'])->name('store.user');
     Route::get('/edit-user/{user}', [AdminController::class, 'editUser'])->name('edit.user');
@@ -38,7 +36,7 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
 });
 
 // Chairperson Routes (Protected)
-Route::middleware(['chairperson'])->prefix('chairperson')->name('chairperson.')->group(function () {
+Route::middleware(['chairperson', 'nocache'])->prefix('chairperson')->name('chairperson.')->group(function () {
     Route::get('/dashboard', [ChairpersonController::class, 'dashboard'])->name('dashboard');
     Route::get('/faculty-members', [ChairpersonController::class, 'facultyMembers'])->name('faculty-members');
     Route::get('/faculty-member/{user}', [ChairpersonController::class, 'facultyMemberDetails'])->name('faculty-member-details');
@@ -55,8 +53,11 @@ Route::middleware(['chairperson'])->prefix('chairperson')->name('chairperson.')-
 });
 
 // Faculty Routes (Protected)
-Route::middleware(['auth'])->prefix('development-objectives')->name('development-objectives.')->group(function () {
+Route::middleware(['auth', 'nocache'])->prefix('development-objectives')->name('development-objectives.')->group(function () {
     Route::get('/', [DevelopmentObjectiveController::class, 'index'])->name('index');
+    Route::get('/add', [DevelopmentObjectiveController::class, 'add'])->name('add');
+    Route::get('/list', [DevelopmentObjectiveController::class, 'list'])->name('list');
+    Route::get('/progress', [DevelopmentObjectiveController::class, 'progress'])->name('progress');
     Route::post('/', [DevelopmentObjectiveController::class, 'store'])->name('store');
     Route::put('/{objective}/status', [DevelopmentObjectiveController::class, 'updateStatus'])->name('update-status');
     Route::delete('/{objective}', [DevelopmentObjectiveController::class, 'destroy'])->name('destroy');
@@ -75,7 +76,7 @@ Route::post('/logout', function () {
     // Regenerate CSRF token
     request()->session()->regenerateToken();
     
-    return redirect()->route('logout.success')
+    return redirect()->route('login')
         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0')
         ->header('Pragma', 'no-cache')
         ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')

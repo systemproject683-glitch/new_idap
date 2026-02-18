@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - IDAP System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             background-color: #fff7ed;
@@ -19,6 +20,31 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header-bar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        :root {
+            --page-header-height: 84px;
+            --page-header-gap: 16px;
+        }
+        .page-header-fixed {
+            position: fixed;
+            top: 0;
+            left: 256px;
+            right: 0;
+            z-index: 20;
+            margin: 0;
+            height: var(--page-header-height);
+        }
+        .page-content {
+            padding-top: 0;
+        }
+        .page-header-spacer {
+            height: calc(var(--page-header-height) + var(--page-header-gap));
         }
         .btn-primary {
             background-color: #ff6b35;
@@ -41,12 +67,14 @@
 
         <!-- Main Content -->
         <div class="flex-1 ml-64 overflow-y-auto">
-            <div class="p-8">
+            <div class="p-8 page-content">
             <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-                <p class="text-gray-600 mt-2">Welcome, {{ Auth::guard('admin')->user()->first_name }} {{ Auth::guard('admin')->user()->last_name }}!</p>
+            <div class="header-bar page-header-fixed">
+                <h1 class="text-2xl font-bold text-gray-800 mt-0">Admin Dashboard</h1>
+                <p class="text-gray-600 mt-1 mb-0 leading-tight">Welcome, {{ Auth::guard('admin')->user()->first_name }} {{ Auth::guard('admin')->user()->last_name }}!</p>
             </div>
+            <div class="page-header-spacer"></div>
+            <div class="px-5">
 
             <!-- Success Message -->
             @if(session('success'))
@@ -59,115 +87,123 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="card p-6">
                     <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Users</h3>
-                    <p class="text-3xl font-bold text-orange-500">{{ $users->total() }}</p>
+                    <p class="text-3xl font-bold text-orange-500">{{ \App\Models\User::count() }}</p>
                 </div>
                 <div class="card p-6">
                     <h3 class="text-lg font-semibold text-gray-700 mb-2">Active Sessions</h3>
                     <p class="text-3xl font-bold text-green-500">{{ \DB::table('sessions')->count() }}</p>
                 </div>
                 <div class="card p-6">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">System Status</h3>
-                    <p class="text-3xl font-bold text-blue-500">Online</p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Development Objectives</h3>
+                    <p class="text-3xl font-bold text-blue-500">{{ $totalDevelopmentObjectives }}</p>
                 </div>
             </div>
 
-            <!-- Users Table -->
-            <div class="card">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-xl font-semibold text-gray-800">Users Management</h2>
-                        <a href="{{ route('admin.create.user') }}" class="btn-primary text-white px-4 py-2 rounded transition">
-                            Add New User
-                        </a>
+            <!-- Recent Activity and Department Distribution -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Recent Activity Card -->
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
+                    <div class="space-y-4">
+                        @if($recentActivities->count() > 0)
+                            @foreach($recentActivities as $activity)
+                                <div class="flex items-start">
+                                    <div class="w-3 h-3 rounded-full bg-orange-500 mt-2 mr-4 flex-shrink-0"></div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-800 text-sm">
+                                            <span class="font-semibold">{{ $activity['user'] }}</span> 
+                                            {{ $activity['action'] }}
+                                        </p>
+                                        <p class="text-gray-500 text-xs mt-1">
+                                            {{ $activity['time']->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="text-center py-8">
+                                <p class="text-gray-500">No recent activities</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
-                
-                <div class="p-6">
-                    @if($users->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="border-b border-gray-200">
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">ID</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Name</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Email</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Department</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Role</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Created At</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($users as $user)
-                                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                            <td class="py-3 px-4">{{ $user->id }}</td>
-                                            <td class="py-3 px-4">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
-                                            <td class="py-3 px-4">{{ $user->email }}</td>
-                                            <td class="py-3 px-4">
-                                                @switch($user->department)
-                                                    @case('DAFE')
-                                                        Department of Agriculture and Food Engineering (DAFE)
-                                                        @break
-                                                    @case('DCEA')
-                                                        Department of Civil Engineering (DCEA)
-                                                        @break
-                                                    @case('DCEEE')
-                                                        Department of Computer, Electronics, and Electrical Engineering (DCEEE)
-                                                        @break
-                                                    @case('DIET')
-                                                        Department of Industrial Engineering and Technology (DIET)
-                                                        @break
-                                                    @case('DIT')
-                                                        Department of Information Technology (DIT)
-                                                        @break
-                                                    @default
-                                                        <span class="text-gray-500">Not Assigned</span>
-                                                @endswitch
-                                            </td>
-                                            <td class="py-3 px-4">
-                                                @if($user->role === 'chairperson')
-                                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
-                                                        Chairperson
-                                                    </span>
-                                                @else
-                                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                        Faculty Member
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td class="py-3 px-4">{{ $user->created_at->format('M d, Y') }}</td>
-                                            <td class="py-3 px-4">
-                                                <a href="{{ route('admin.edit.user', $user->id) }}" class="text-blue-500 hover:text-blue-700 mr-3">
-                                                    Edit
-                                                </a>
-                                                <form method="POST" action="{{ route('admin.delete.user', $user->id) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-500 hover:text-red-700">
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination -->
-                        <div class="mt-6">
-                            {{ $users->links() }}
-                        </div>
-                    @else
-                        <div class="text-center py-8">
-                            <p class="text-gray-500">No users found. <a href="{{ route('admin.create.user') }}" class="text-orange-500 hover:text-orange-600">Add your first user</a>.</p>
-                        </div>
-                    @endif
+
+                <!-- Department Distribution Card -->
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Department Distribution</h2>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Department Distribution Chart
+        const departmentData = @json($departmentData);
+        const ctx = document.getElementById('departmentChart').getContext('2d');
+        
+        const departments = departmentData.map(d => d.name);
+        const usersData = departmentData.map(d => d.users);
+        const objectivesData = departmentData.map(d => d.objectives);
+        const completedData = departmentData.map(d => d.completed);
+        
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: departments,
+                datasets: [
+                    {
+                        label: 'Users',
+                        data: usersData,
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#1e40af',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Development Objectives',
+                        data: objectivesData,
+                        backgroundColor: '#f97316',
+                        borderColor: '#c2410c',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Completed',
+                        data: completedData,
+                        backgroundColor: '#10b981',
+                        borderColor: '#047857',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

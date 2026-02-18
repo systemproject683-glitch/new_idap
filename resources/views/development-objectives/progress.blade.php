@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Development Objectives - IDAP System</title>
+    <title>Progress Tracking - IDAP System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             background-color: #fff7ed;
         }
-        
+
         .card {
-            background-color: white;
+            background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -67,57 +67,7 @@
             transform: translateY(-8px);
             pointer-events: none;
         }
-        
-        .objectives-left-cell {
-            height: 100%;
-            vertical-align: top;
-        }
 
-        .objectives-list-card {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .scrollable-card-body {
-            overflow-y: visible;
-            flex: 1;
-            max-height: none;
-        }
-        
-        .btn-primary {
-            background-color: #ff6b35;
-        }
-        .btn-primary:hover {
-            background-color: #e55a2b;
-        }
-        .btn-success {
-            background-color: #28a745;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .btn-warning {
-            background-color: #ffc107;
-        }
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .input-field {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-        .input-field:focus {
-            border-color: #ff6b35;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
         .status-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
@@ -136,67 +86,6 @@
             background-color: #fed7aa;
             color: #7c2d12;
         }
-        .custom-select {
-            position: relative;
-        }
-        .custom-select-native {
-            position: absolute;
-            inset: 0;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .custom-select-trigger {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            background-color: #ffffff;
-            text-align: left;
-            cursor: pointer;
-        }
-        .custom-select-menu {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: calc(100% + 4px);
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
-            padding: 6px 0;
-            z-index: 30;
-            max-height: 240px;
-            overflow-y: auto;
-            display: none;
-        }
-        .custom-select.open .custom-select-menu {
-            display: block;
-        }
-        .custom-select-option {
-            display: block;
-            width: 100%;
-            padding: 8px 16px;
-            font-size: 0.95rem;
-            color: #1f2937;
-            text-align: left;
-            background: transparent;
-            cursor: pointer;
-        }
-        .custom-select-option:hover,
-        .custom-select-option:focus {
-            background-color: #fed7aa;
-            color: #7c2d12;
-            outline: none;
-        }
-        .custom-select-group {
-            padding: 6px 16px 4px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #6b7280;
-        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -209,10 +98,25 @@
             <div class="p-8 page-content">
                 <!-- Header -->
                 <div class="header-bar page-header-fixed">
-                    <h1 class="text-2xl font-bold text-gray-800 mt-0">Dashboard</h1>
-                    <p class="text-gray-600 mt-1 mb-0 leading-tight">Stay on top of your progress and milestones</p>
+                    <h1 class="text-2xl font-bold text-gray-800 mt-0">Progress Tracking</h1>
+                    <p class="text-gray-600 mt-1 mb-0 leading-tight">Monitor objective status and completion</p>
                 </div>
                 <div class="page-header-spacer"></div>
+
+                @if(session('success') || session('error'))
+                    <div class="alert-popup" id="alert-popup">
+                        @if(session('success'))
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                    </div>
+                @endif
 
                 @php
                     $totalObjectives = $objectives->count();
@@ -259,105 +163,72 @@
                     }
                 @endphp
 
-                <div class="px-5">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-                        <div class="card p-5 border-l-4 border-orange-500">
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <svg class="h-4 w-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
-                                </svg>
-                                <p class="text-sm">Total Objectives</p>
-                            </div>
-                            <p class="text-2xl font-semibold text-gray-800 mt-2">{{ $totalObjectives }}</p>
-                        </div>
-                        <div class="card p-5 border-l-4 border-orange-500">
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <svg class="h-4 w-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2" />
-                                    <circle cx="12" cy="12" r="9" stroke-width="2" />
-                                </svg>
-                                <p class="text-sm">Pending</p>
-                            </div>
-                            <p class="text-2xl font-semibold text-amber-600 mt-2">{{ $pendingObjectives }}</p>
-                        </div>
-                        <div class="card p-5 border-l-4 border-orange-500">
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h7" />
-                                </svg>
-                                <p class="text-sm">In Progress</p>
-                            </div>
-                            <p class="text-2xl font-semibold text-blue-600 mt-2">{{ $inProgressObjectives }}</p>
-                        </div>
-                        <div class="card p-5 border-l-4 border-orange-500">
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <svg class="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <p class="text-sm">Completed</p>
-                            </div>
-                            <p class="text-2xl font-semibold text-green-600 mt-2">{{ $completedObjectives }}</p>
+                <div class="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-6">
+                    <div>
+                        <div class="space-y-4">
+                            @if($objectives->count() > 0)
+                                @foreach($objectives as $objective)
+                                    <a href="{{ route('development-objectives.list') }}#objective-{{ $objective->id }}" class="card border border-gray-200 rounded-lg p-4 hover:shadow-md transition transform hover:scale-[1.02] block">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ $objective->objective }}</h3>
+                                                <p class="text-gray-600 mb-3">{{ $objective->action_plan }}</p>
+
+                                                <div class="flex items-center gap-4 mb-4">
+                                                    <span class="status-badge status-{{ str_replace('_', '-', $objective->status) }}">
+                                                        {{ ucfirst(str_replace('_', ' ', $objective->status)) }}
+                                                    </span>
+                                                    <span class="text-sm text-gray-500">
+                                                        Created: {{ $objective->created_at->format('M d, Y') }}
+                                                    </span>
+                                                </div>
+
+                                                @if($objective->max_files > 0)
+                                                    @php
+                                                        $approvedFileCount = $objective->files->where('verification_status', 'approved')->count();
+                                                        $percentage = ($approvedFileCount / $objective->max_files) * 100;
+                                                    @endphp
+                                                    <div class="mb-2">
+                                                        <div class="flex justify-between items-center mb-1">
+                                                            <span class="text-xs text-gray-500">
+                                                                {{ $approvedFileCount }}/{{ $objective->max_files }} approved files
+                                                            </span>
+                                                            <span class="text-xs font-medium
+                                                                @if($percentage >= 100) text-orange-700
+                                                                @elseif($percentage >= 75) text-orange-600
+                                                                @elseif($percentage >= 50) text-orange-500
+                                                                @else text-orange-400
+                                                                @endif">
+                                                                {{ round($percentage) }}% Complete
+                                                            </span>
+                                                        </div>
+                                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                                            <div class="h-2 rounded-full transition-all duration-300
+                                                                @if($percentage >= 100) bg-orange-500
+                                                                @elseif($percentage >= 75) bg-orange-400
+                                                                @elseif($percentage >= 50) bg-orange-300
+                                                                @else bg-orange-200
+                                                                @endif"
+                                                                style="width: {{ min($percentage, 100) }}%">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <p class="text-xs text-gray-500">No file requirements for this objective.</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            @else
+                                <div class="card p-8 text-center">
+                                    <p class="text-gray-500">No development objectives found. Add your first objective from the Add Objective page.</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-                        <a href="{{ route('development-objectives.list') }}" class="card p-8 border-l-4 border-orange-500 transition hover:shadow-lg hover:scale-105 transform h-80 flex flex-col items-start group">
-                            <div class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <circle cx="12" cy="12" r="9" stroke-width="2"></circle>
-                                    <circle cx="12" cy="12" r="5" stroke-width="2"></circle>
-                                    <circle cx="12" cy="12" r="1.5" stroke-width="2" fill="currentColor"></circle>
-                                </svg>
-                            </div>
-                            <div class="text-base font-bold text-orange-600">Development Objectives</div>
-                            <p class="text-gray-600 mt-3 text-base">Jump to your current objectives list and details.</p>
-                            <div class="mt-auto pt-6 text-orange-600 opacity-0 transition duration-200 group-hover:opacity-100">
-                                <span class="inline-flex items-center gap-2 text-sm font-semibold">
-                                    Explore
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6l6 6-6 6" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </a>
-                        <a href="{{ route('development-objectives.add') }}" class="card p-8 border-l-4 border-orange-500 transition hover:shadow-lg hover:scale-105 transform h-80 flex flex-col items-start group">
-                            <div class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7H5" />
-                                </svg>
-                            </div>
-                            <div class="text-base font-bold text-orange-600">Add Objective</div>
-                            <p class="text-gray-600 mt-3 text-base">Create a new development objective and action plan.</p>
-                            <div class="mt-auto pt-6 text-orange-600 opacity-0 transition duration-200 group-hover:opacity-100">
-                                <span class="inline-flex items-center gap-2 text-sm font-semibold">
-                                    Explore
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6l6 6-6 6" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </a>
-                        <a href="{{ route('development-objectives.progress') }}" class="card p-8 border-l-4 border-orange-500 hover:scale-105 transform transition h-80 flex flex-col items-start group">
-                            <div class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6v12a2 2 0 002 2h12" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 6l-8 8-4-4" />
-                                </svg>
-                            </div>
-                            <div class="text-base font-bold text-orange-600">Progress Tracking</div>
-                            <p class="text-gray-600 mt-3 text-base">Monitor objective status, uploads, and completion.</p>
-                            <div class="mt-auto pt-6 text-orange-600 opacity-0 transition duration-200 group-hover:opacity-100">
-                                <span class="inline-flex items-center gap-2 text-sm font-semibold">
-                                    Explore
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6l6 6-6 6" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                    <div class="space-y-6 right-column-sticky">
                         <div class="card border-l-4 border-orange-500">
                             <div class="p-6 border-b border-gray-200">
                                 <div class="flex items-center gap-2 text-orange-600">
@@ -379,6 +250,7 @@
                                 </p>
                             </div>
                         </div>
+
                         <div class="card border-l-4 border-orange-500">
                             <div class="p-6 border-b border-gray-200">
                                 <div class="flex items-center gap-2 text-orange-600">
@@ -456,22 +328,6 @@
                         </div>
                     </div>
                 </div>
-
-                @if(session('success') || session('error'))
-                    <div class="alert-popup" id="alert-popup">
-                        @if(session('success'))
-                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                                {{ session('error') }}
-                            </div>
-                        @endif
-                    </div>
-                @endif
-
             </div>
         </div>
     </div>
@@ -524,5 +380,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
 </script>

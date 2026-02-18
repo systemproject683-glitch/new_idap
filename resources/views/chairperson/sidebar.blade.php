@@ -9,15 +9,15 @@
             <p class="text-sm text-white">Individual Development and Action Plan System</p>
         </div>
         
-        <nav class="space-y-2 flex-1">
-            <a href="{{ route('chairperson.dashboard') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors {{ request()->routeIs('chairperson.dashboard') ? 'bg-white bg-opacity-20' : '' }}">
+        <nav class="space-y-2 flex-1 text-[14px]">
+            <a href="{{ route('chairperson.dashboard') }}" class="flex items-center px-4 py-2 rounded-lg transition-colors hover:bg-gradient-to-r hover:from-white/25 hover:to-white/0 {{ request()->routeIs('chairperson.dashboard') ? 'bg-white bg-opacity-20' : '' }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5L12 4l9 6.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" />
                 </svg>
                 Dashboard
             </a>
             
-            <a href="{{ route('chairperson.faculty-members') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors {{ request()->routeIs('chairperson.faculty-members') ? 'bg-white bg-opacity-20' : '' }}">
+            <a href="{{ route('chairperson.faculty-members') }}" class="flex items-center px-4 py-2 rounded-lg transition-colors hover:bg-gradient-to-r hover:from-white/25 hover:to-white/0 {{ request()->routeIs('chairperson.faculty-members') ? 'bg-white bg-opacity-20' : '' }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>

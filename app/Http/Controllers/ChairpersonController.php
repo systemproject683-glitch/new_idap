@@ -19,7 +19,7 @@ class ChairpersonController extends Controller
         // Get faculty members from the same department
         $facultyMembers = User::where('department', $chairperson->department)
             ->where('role', 'faculty')
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->get();
         
         // Get statistics
@@ -85,7 +85,7 @@ class ChairpersonController extends Controller
         // Get faculty members from the same department
         $facultyMembers = User::where('department', $chairperson->department)
             ->where('role', 'faculty')
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->paginate(10);
         
         return view('chairperson.faculty-members', compact('facultyMembers'));
@@ -138,7 +138,7 @@ class ChairpersonController extends Controller
         // Get faculty members from the same department
         $facultyMembers = User::where('department', $chairperson->department)
             ->where('role', 'faculty')
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->get();
         
         // Load objectives and files for each faculty member

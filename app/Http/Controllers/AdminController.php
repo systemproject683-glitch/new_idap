@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\DevelopmentObjective;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -49,8 +50,49 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+        $totalDevelopmentObjectives = DevelopmentObjective::count();
+        
+        // Get recent activities (last 5)
+        $recentActivities = DevelopmentObjective::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function($objective) {
+                return [
+                    'user' => $objective->user->first_name . ' ' . $objective->user->last_name,
+                    'action' => 'created new development objective',
+                    'time' => $objective->created_at
+                ];
+            });
+        
+        // Get department distribution data
+        $departments = ['DAFE', 'DCEA', 'DCEEE', 'DIET', 'DIT'];
+        $departmentData = [];
+        
+        foreach ($departments as $dept) {
+            $usersCount = User::where('department', $dept)->count();
+            $objectivesCount = DevelopmentObjective::whereHas('user', function($query) use ($dept) {
+                $query->where('department', $dept);
+            })->count();
+            $completedCount = DevelopmentObjective::whereHas('user', function($query) use ($dept) {
+                $query->where('department', $dept);
+            })->where('status', 'completed')->count();
+            
+            $departmentData[] = [
+                'name' => $dept,
+                'users' => $usersCount,
+                'objectives' => $objectivesCount,
+                'completed' => $completedCount
+            ];
+        }
+        
+        return view('admin.dashboard', compact('totalDevelopmentObjectives', 'recentActivities', 'departmentData'));
+    }
+
+    public function userManagement()
+    {
         $users = User::paginate(10);
-        return view('admin.dashboard', compact('users'));
+        return view('admin.user-management', compact('users'));
     }
 
     public function createUser()

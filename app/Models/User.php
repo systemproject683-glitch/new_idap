@@ -65,4 +65,12 @@ class User extends Authenticatable
     {
         return trim("{$this->first_name} {$this->last_name}");
     }
+
+    /**
+     * Get the user's name (for backward compatibility).
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->display_name;
+    }
 }

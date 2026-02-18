@@ -35,6 +35,31 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
+        .header-bar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        :root {
+            --page-header-height: 84px;
+            --page-header-gap: 16px;
+        }
+        .page-header-fixed {
+            position: fixed;
+            top: 0;
+            left: 256px;
+            right: 0;
+            z-index: 20;
+            margin: 0;
+            height: var(--page-header-height);
+        }
+        .page-content {
+            padding-top: 0;
+        }
+        .page-header-spacer {
+            height: calc(var(--page-header-height) + var(--page-header-gap));
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -44,12 +69,14 @@
 
         <!-- Main Content -->
         <div class="flex-1 ml-64 overflow-y-auto">
-            <div class="p-8">
+            <div class="p-8 page-content">
             <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-800">Create New User</h1>
-                <p class="text-gray-600 mt-2">Add a new user to the IDAP system</p>
+            <div class="header-bar page-header-fixed">
+                <h1 class="text-2xl font-bold text-gray-800 mt-0">Create New User</h1>
+                <p class="text-gray-600 mt-1 mb-0 leading-tight">Add a new user to the IDAP system</p>
             </div>
+            <div class="page-header-spacer"></div>
+            <div class="px-5">
 
             <!-- Form Card -->
             <div class="card max-w-2xl">
@@ -239,6 +266,7 @@
                 </div>
             </div>
         </div>
+            </div>
             </div>
         </div>
     </div>

@@ -27,6 +27,43 @@ class DevelopmentObjectiveController extends Controller
     }
 
     /**
+     * Display the user's development objectives list.
+     */
+    public function list()
+    {
+        $user = Auth::user();
+        $objectives = DevelopmentObjective::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('development-objectives.list', compact('objectives'));
+    }
+
+    /**
+     * Display the user's progress tracking page.
+     */
+    public function progress()
+    {
+        $user = Auth::user();
+        $objectives = DevelopmentObjective::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('development-objectives.progress', compact('objectives'));
+    }
+
+    /**
+     * Show the add objective form.
+     */
+    public function add()
+    {
+        $predefinedObjectives = DevelopmentObjective::getPredefinedObjectives();
+        $adminObjectives = DevelopmentObjective::getAdminObjectives();
+
+        return view('development-objectives.add', compact('predefinedObjectives', 'adminObjectives'));
+    }
+
+    /**
      * Store a new development objective.
      */
     public function store(Request $request)
