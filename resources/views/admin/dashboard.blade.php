@@ -21,6 +21,10 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .card-orange-shadow {
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.2);
+            border-bottom: 1px solid #ff6b35;
+        }
         .header-bar {
             background-color: #ffffff;
             border-radius: 12px;
@@ -58,6 +62,14 @@
         .btn-danger:hover {
             background-color: #c82333;
         }
+        .stat-card {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3) !important;
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -85,15 +97,15 @@
 
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="card p-6">
+                <div class="card card-orange-shadow p-6 stat-card">
                     <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Users</h3>
                     <p class="text-3xl font-bold text-orange-500">{{ \App\Models\User::count() }}</p>
                 </div>
-                <div class="card p-6">
+                <div class="card card-orange-shadow p-6 stat-card">
                     <h3 class="text-lg font-semibold text-gray-700 mb-2">Active Sessions</h3>
                     <p class="text-3xl font-bold text-green-500">{{ \DB::table('sessions')->count() }}</p>
                 </div>
-                <div class="card p-6">
+                <div class="card card-orange-shadow p-6 stat-card">
                     <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Development Objectives</h3>
                     <p class="text-3xl font-bold text-blue-500">{{ $totalDevelopmentObjectives }}</p>
                 </div>
@@ -102,7 +114,7 @@
             <!-- Recent Activity and Department Distribution -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- Recent Activity Card -->
-                <div class="card p-6">
+                <div class="card card-orange-shadow p-6">
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
                     <div class="space-y-4">
                         @if($recentActivities->count() > 0)
@@ -129,7 +141,7 @@
                 </div>
 
                 <!-- Department Distribution Card -->
-                <div class="card p-6">
+                <div class="card card-orange-shadow p-6">
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Department Distribution</h2>
                     <div style="position: relative; height: 300px;">
                         <canvas id="departmentChart"></canvas>

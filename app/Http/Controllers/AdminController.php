@@ -139,14 +139,6 @@ class AdminController extends Controller
             ->with('success', 'User created successfully.');
     }
 
-    public function editUser(User $user)
-    {
-        // Debug: Log the user data
-        \Log::info('Edit user called with user:', $user->toArray());
-        
-        return view('admin.edit-user', compact('user'));
-    }
-
     public function updateUser(Request $request, User $user)
     {
         // Debug: Log the incoming request data
@@ -194,14 +186,14 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.users')
             ->with('success', 'User updated successfully.');
     }
 
     public function deleteUser(User $user)
     {
         $user->delete();
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.users')
             ->with('success', 'User deleted successfully.');
     }
 

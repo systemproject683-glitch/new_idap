@@ -24,7 +24,6 @@ Route::middleware(['admin', 'nocache'])->prefix('admin')->name('admin.')->group(
     Route::get('/users', [AdminController::class, 'userManagement'])->name('users');
     Route::get('/create-user', [AdminController::class, 'createUser'])->name('create.user');
     Route::post('/store-user', [AdminController::class, 'storeUser'])->name('store.user');
-    Route::get('/edit-user/{user}', [AdminController::class, 'editUser'])->name('edit.user');
     Route::put('/update-user/{user}', [AdminController::class, 'updateUser'])->name('update.user');
     Route::delete('/delete-user/{user}', [AdminController::class, 'deleteUser'])->name('delete.user');
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
