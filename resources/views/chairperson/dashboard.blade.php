@@ -21,13 +21,47 @@
         .btn-primary:hover {
             background-color: #e55a2b;
         }
+        .card-orange-shadow {
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.2);
+            border-bottom: 1px solid #ff6b35;
+        }
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            transition: transform 0.2s;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .stat-card:hover {
-            transform: translateY(-2px);
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3) !important;
+        }
+
+        .header-bar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        :root {
+            --page-header-height: 84px;
+            --page-header-gap: 16px;
+        }
+
+        .page-header-fixed {
+            position: fixed;
+            top: 0;
+            left: 256px;
+            right: 0;
+            z-index: 20;
+            margin: 0;
+            height: var(--page-header-height);
+        }
+
+        .page-content {
+            padding-top: 0;
+        }
+
+        .page-header-spacer {
+            height: calc(var(--page-header-height) + var(--page-header-gap));
         }
     </style>
 </head>
@@ -38,96 +72,54 @@
 
         <!-- Main Content -->
         <div class="flex-1 ml-64 overflow-y-auto">
-            <div class="p-8">
+            <div class="p-8 page-content">
                 <!-- Header -->
-                <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-gray-800">Chairperson Dashboard</h1>
-                    <p class="text-gray-600 mt-2">Manage and monitor faculty members in your department</p>
-                </div>
-
-                <!-- Department Info -->
-                <div class="card mb-8">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-xl font-semibold text-gray-800">{{ Auth::user()->department }} Department</h2>
-                                <p class="text-gray-600">Overview of your department's faculty members and objectives</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm text-gray-500">Welcome back,</p>
-                                <p class="text-lg font-medium text-gray-800">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
-                            </div>
+                <div class="header-bar page-header-fixed">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800 mt-0">{{ Auth::user()->department }} Department</h1>
+                            <p class="text-gray-600 mt-1 mb-0 leading-tight">Overview of your department's faculty members and objectives</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Welcome back,</p>
+                            <p class="text-lg font-medium text-gray-800">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
                         </div>
                     </div>
                 </div>
+                <div class="page-header-spacer"></div>
 
                 <!-- Statistics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="stat-card p-6 text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-white/80 text-sm mb-1">Total Faculty Members</p>
-                                <p class="text-3xl font-bold">{{ $totalFaculty }}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
+                    <div class="card card-orange-shadow p-6 stat-card">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Faculty Members</h3>
+                        <p class="text-3xl font-bold text-orange-500">{{ $totalFaculty }}</p>
                     </div>
 
-                    <div class="stat-card p-6 text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-white/80 text-sm mb-1">Faculty Completed</p>
-                                <p class="text-3xl font-bold">{{ $facultyWithCompletedObjectives }}/{{ $facultyWithAnyObjectives }}</p>
-                                <p class="text-white/80 text-xs mt-1">{{ round($facultyCompletionRate) }}% Complete</p>
-                            </div>
-                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
+                    <div class="card card-orange-shadow p-6 stat-card">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Faculty Completed</h3>
+                        <p class="text-3xl font-bold text-green-500">{{ $facultyWithCompletedObjectives }}/{{ $facultyWithAnyObjectives }}</p>
                     </div>
 
-                    <div class="stat-card p-6 text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-white/80 text-sm mb-1">Active Objectives</p>
-                                <p class="text-3xl font-bold">{{ $activeObjectives }}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2h10a2 2 0 002-2V6a2 2 0 00-2-2h-2M9 7a1 1 0 012 0v6a1 1 0 11-2 0V7z"></path>
-                                </svg>
-                            </div>
-                        </div>
+                    <div class="card card-orange-shadow p-6 stat-card">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Active Objectives</h3>
+                        <p class="text-3xl font-bold text-blue-500">{{ $activeObjectives }}</p>
                     </div>
 
-                    <div class="stat-card p-6 text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-white/80 text-sm mb-1">Completed Objectives</p>
-                                <p class="text-3xl font-bold">{{ $completedObjectives }}</p>
-                            </div>
-                            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
+                    <div class="card card-orange-shadow p-6 stat-card">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Completed Objectives</h3>
+                        <p class="text-3xl font-bold text-purple-500">{{ $completedObjectives }}</p>
                     </div>
                 </div>
 
-                <!-- Faculty Completion Progress -->
-                <div class="card mb-8">
-                    <div class="p-6 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-800">Faculty Completion Progress</h2>
-                        <p class="text-sm text-gray-600 mt-1">{{ $facultyWithCompletedObjectives }} out of {{ $facultyWithAnyObjectives }} faculty members have completed all their objectives</p>
-                    </div>
-                    <div class="p-6">
+                <!-- Faculty Completion Progress & Quick Stats -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2">
+                        <div class="card h-full">
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-xl font-semibold text-gray-800">Faculty Completion Progress</h2>
+                                <p class="text-sm text-gray-600 mt-1">{{ $facultyWithCompletedObjectives }} out of {{ $facultyWithAnyObjectives }} faculty members have completed all their objectives</p>
+                            </div>
+                            <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex-1">
                                 <div class="flex justify-between items-center mb-2">
@@ -154,59 +146,58 @@
                             </div>
                         </div>
                         
-                        @if($facultyWithAnyObjectives > 0)
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                                <div class="text-center p-4 bg-gray-50 rounded-lg">
-                                    <p class="text-2xl font-bold text-green-600">{{ $facultyWithCompletedObjectives }}</p>
-                                    <p class="text-sm text-gray-600">Completed All Objectives</p>
+                            @if($facultyWithAnyObjectives > 0)
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-2xl font-bold text-green-600">{{ $facultyWithCompletedObjectives }}</p>
+                                        <p class="text-sm text-gray-600">Completed All Objectives</p>
+                                    </div>
+                                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-2xl font-bold text-orange-600">{{ $facultyWithAnyObjectives - $facultyWithCompletedObjectives }}</p>
+                                        <p class="text-sm text-gray-600">In Progress</p>
+                                    </div>
+                                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-2xl font-bold text-gray-600">{{ $totalFaculty - $facultyWithAnyObjectives }}</p>
+                                        <p class="text-sm text-gray-600">No Objectives Yet</p>
+                                    </div>
                                 </div>
-                                <div class="text-center p-4 bg-gray-50 rounded-lg">
-                                    <p class="text-2xl font-bold text-orange-600">{{ $facultyWithAnyObjectives - $facultyWithCompletedObjectives }}</p>
-                                    <p class="text-sm text-gray-600">In Progress</p>
-                                </div>
-                                <div class="text-center p-4 bg-gray-50 rounded-lg">
-                                    <p class="text-2xl font-bold text-gray-600">{{ $totalFaculty - $facultyWithAnyObjectives }}</p>
-                                    <p class="text-sm text-gray-600">No Objectives Yet</p>
-                                </div>
+                            @endif
+                        </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="card">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800">Quick Stats</h2>
+                        </div>
+                        <div class="p-6 space-y-6">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Total Objectives</span>
+                                <span class="text-2xl font-bold text-gray-800">@php
+                                    $totalObjectives = $activeObjectives + $completedObjectives;
+                                @endphp
+                                {{ $totalObjectives }}</span>
                             </div>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="card">
-                    <div class="p-6 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-800">Quick Actions</h2>
-                    </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <a href="{{ route('chairperson.faculty-members') }}" class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-medium text-gray-800">View Faculty Members</h3>
-                                        <p class="text-sm text-gray-600">See all faculty members in your department</p>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('chairperson.department-reports') }}" class="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-medium text-gray-800">Department Reports</h3>
-                                        <p class="text-sm text-gray-600">View department performance reports</p>
-                                    </div>
-                                </div>
-                            </a>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Completed</span>
+                                <span class="text-2xl font-bold text-green-600">{{ $completedObjectives }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">In Progress</span>
+                                <span class="text-2xl font-bold text-blue-600">@php
+                                    $inProgressCount = ($activeObjectives ?? 0) - ($completedObjectives ?? 0);
+                                    $inProgressCount = max(0, $inProgressCount);
+                                @endphp
+                                {{ $inProgressCount }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Not Started</span>
+                                <span class="text-2xl font-bold text-gray-600">@php
+                                    $notStartedCount = ($totalFaculty - $facultyWithAnyObjectives) ?? 0;
+                                @endphp
+                                {{ $notStartedCount }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -264,6 +264,22 @@
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+
+                            <div class="mt-4">
+                                <label for="regularized_at" class="block text-gray-700 text-sm font-medium mb-2">
+                                    Regularization Date
+                                </label>
+                                <input
+                                    type="date"
+                                    id="regularized_at"
+                                    name="regularized_at"
+                                    class="input-field w-full px-4 py-2.5 text-gray-700"
+                                    value="{{ old('regularized_at') }}"
+                                >
+                                @error('regularized_at')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <p class="step-helper">Assign the user to a department and their role within it</p>
                         </div>
                         

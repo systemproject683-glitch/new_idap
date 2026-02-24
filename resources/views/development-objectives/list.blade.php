@@ -182,6 +182,56 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
+        /* IDAP Modal Styles */
+        .idap-modal-container {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #idapModal > div {
+            background-color: #e5e7eb;
+            max-width: 1200px;
+        }
+
+        #idapDocument {
+            display: block;
+            padding: 20px;
+            background-color: #e5e7eb;
+            min-height: 600px;
+        }
+
+        /* A4 Page Container Styles */
+        .a4-page {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 1056px;
+            height: auto;
+            margin: 0 auto 30px auto;
+            background-color: white;
+            padding: 96px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+            page-break-after: always;
+            break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content-body {
+            flex: 1;
+        }
+
+        .page-footer-ref {
+            margin-top: auto;
+        }
+
+        .a4-page:last-child {
+            margin-bottom: 0;
+            page-break-after: auto;
+            break-after: auto;
+        }
+
+
     </style>
 </head>
 <body class="min-h-screen">
@@ -299,6 +349,7 @@
 
                                                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
                                                         <form method="POST" action="{{ route('development-objectives.upload-file', $objective->id) }}"
+                                                              data-upload-form
                                                               enctype="multipart/form-data" class="space-y-3 lg:col-span-2">
                                                             @csrf
                                                             <div class="flex flex-col gap-3">
@@ -329,7 +380,7 @@
                                                                     @else
                                                                         <span></span>
                                                                     @endif
-                                                                    <button type="submit" class="btn-primary text-white px-4 py-2 rounded text-sm"
+                                                                    <button type="submit" class="btn-primary text-white px-4 py-2 rounded text-sm" data-upload-submit
                                                                             @if($objective->max_files > 0 && $objective->files->count() >= $objective->max_files) disabled @endif>
                                                                         Upload
                                                                     </button>
@@ -451,11 +502,16 @@
                     <div class="space-y-6 pt-2 right-column-sticky">
                         <div class="card border-l-4 border-orange-500">
                             <div class="p-6 border-b border-gray-200">
-                                <div class="flex items-center gap-2 text-orange-600">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
-                                    </svg>
-                                    <h2 class="text-lg font-semibold text-orange-600">Objectives Summary</h2>
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2 text-orange-600">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+                                        </svg>
+                                        <h2 class="text-lg font-semibold text-orange-600">Objectives Summary</h2>
+                                    </div>
+                                    <button id="openIdapModal" type="button" class="btn-primary text-white px-3 py-1.5 rounded text-sm hover:bg-orange-600 transition">
+                                        View IDAP
+                                    </button>
                                 </div>
                             </div>
                             <div class="p-6 space-y-4">
@@ -497,6 +553,461 @@
                                     Based on completed objectives
                                 </p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IDAP Modal -->
+                @php
+                    $availableYears = $availableYears ?? collect();
+                    $displayYear = $selectedYear ?? now()->format('Y');
+                @endphp
+                <div id="idapModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 idap-modal-container">
+                    <div class="bg-white rounded-lg w-full max-h-[95vh] overflow-y-auto" style="max-width: 1400px;">
+                        <!-- Modal Header -->
+                        <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between" style="z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <h2 class="text-xxl font-bold text-gray-800">Individual Development and Action Plan (IDAP)</h2>
+                            <div class="flex items-center gap-3">
+                                <label for="idapYearSelect" class="text-xs text-gray-500">Year</label>
+                                <select id="idapYearSelect" class="border border-gray-300 rounded px-2 py-1 text-sm">
+                                    @if($availableYears->isEmpty())
+                                        <option value="{{ now()->format('Y') }}">{{ now()->format('Y') }}</option>
+                                    @else
+                                        @foreach($availableYears as $year)
+                                            <option value="{{ $year }}" {{ (string) $displayYear === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                <button id="closeIdapModal" class="text-gray-400 hover:text-gray-600 transition">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Modal Body - Document in Landscape -->
+                        <div id="idapDocument">
+                            <!-- First Page -->
+                            <div class="a4-page">
+                                <!-- Document Reference Number - Top Right -->
+                                <div class="page-header-ref text-right" style="font-family: Arial; font-size: 12px; font-style: italic; color: #999; margin-bottom: 4px;">
+                                    HRDO-QF-26
+                                </div>
+
+                                <div class="page-content-body">
+
+                                <!-- Header Section with Logos -->
+                                <div class="flex items-center justify-center mb-6 pb-4" style="border-bottom: 2px solid #666; gap: 2px; display: flex; align-items: flex-start; justify-content: center;">
+                                    <!-- CVSU Logo -->
+                                    <div style="width: 110px; text-align: center; flex-shrink: 0; padding-top: 0;">
+                                        @if(file_exists(public_path('images/cvsu-logo.png')))
+                                            <img src="{{ asset('images/cvsu-logo.png') }}" alt="CVSU Logo" style="width: 110px; height: 110px; object-fit: contain; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                        @else
+                                            <svg viewBox="0 0 100 100" style="width: 110px; height: 110px; display: block; margin: 0 auto; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                                <!-- CVSU Diamond Logo with Torch -->
+                                                <defs>
+                                                    <linearGradient id="cvsuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                        <stop offset="0%" style="stop-color:#4a7c59;stop-opacity:1" />
+                                                        <stop offset="100%" style="stop-color:#2d5016;stop-opacity:1" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <!-- Diamond shape -->
+                                                <polygon points="50,5 95,50 50,95 5,50" fill="url(#cvsuGrad)" stroke="#1a3a0a" stroke-width="2"/>
+                                                <!-- Inner lighter diamond -->
+                                                <polygon points="50,15 85,50 50,85 15,50" fill="#a8d5a8" stroke="none"/>
+                                                <!-- Torch/Flame symbol -->
+                                                <circle cx="50" cy="45" r="8" fill="#f5b041"/>
+                                                <path d="M 50 30 Q 45 35 45 42 Q 45 50 50 55 Q 55 50 55 42 Q 55 35 50 30" fill="#ff8c00"/>
+                                                <circle cx="50" cy="38" r="5" fill="#ffd700"/>
+                                            </svg>
+                                        @endif
+                                    </div>
+
+                                    <!-- Center Header Text -->
+                                    <div style="text-align: center; padding: 0;">
+                                        <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 0;">Republic of the Philippines</p>
+                                        <h1 style="font-family: Bookman Old Style; font-size: 17px; font-weight: bold; color: #000000; margin: 2px 0;">CAVITE STATE UNIVERSITY</h1>
+                                        <p style="font-family: Arial; font-size: 12px; font-weight: bold; color: #000000; margin: 2px 0; line-height: 1;">Don Severino de las Alas Campus</p>
+                                        <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 1px 0; line-height: 1;">Indang, Cavite</p>
+                                        <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 0; line-height: 1;">(046) 483-9250</p>
+                                        <a href="https://www.cvsu.edu.ph" style="font-family: Arial; font-size: 12px; font-style: italic; color: #2563eb; text-decoration: underline; margin: 0; display: block; line-height: 1;">www.cvsu.edu.ph</a>
+                                        <p style="font-family: Arial; font-size: 14px; font-weight: bold; color: #000000; margin-top: 30px;">HUMAN RESOURCE DEVELOPMENT OFFICE</p>
+                                    </div>
+
+                                    <!-- Bagong Pilipinas Logo -->
+                                    <div style="width: 110px; text-align: center; flex-shrink: 0; padding-top: 0;">
+                                        @if(file_exists(public_path('images/bagong-pilipinas-logo.png')))
+                                            <img src="{{ asset('images/bagong-pilipinas-logo.png') }}" alt="Bagong Pilipinas Logo" style="width: 110px; height: 110px; object-fit: contain; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                        @else
+                                            <svg viewBox="0 0 100 100" style="width: 110px; height: 110px; display: block; margin: 0 auto; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                                <!-- Bagong Pilipinas Logo (simplified star with colors) -->
+                                                <defs>
+                                                    <linearGradient id="bpGradTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                        <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                                                        <stop offset="100%" style="stop-color:#ffed4e;stop-opacity:1" />
+                                                    </linearGradient>
+                                                    <linearGradient id="bpGradBot" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                        <stop offset="0%" style="stop-color:#1f4788;stop-opacity:1" />
+                                                        <stop offset="50%" style="stop-color:#c41e3a;stop-opacity:1" />
+                                                        <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <!-- Yellow sun/star top -->
+                                                <circle cx="50" cy="35" r="22" fill="url(#bpGradTop)"/>
+                                                <!-- Philippines shape approximation (curved shape) -->
+                                                <path d="M 35 50 Q 30 60 35 75 Q 50 85 65 75 Q 70 60 65 50 Z" fill="url(#bpGradBot)"/>
+                                                <!-- Center accent -->
+                                                <circle cx="50" cy="65" r="8" fill="#ffd700"/>
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- Document Title -->
+                                <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 13px; letter-spacing: 0.5px;">INDIVIDUAL DEVELOPMENT AND ACTION PLAN</h2>
+                                <div style="text-align: center; margin-bottom: 12px; font-size: 11px;">
+                                    <span style="font-weight: bold; color: #000;">{{ $displayYear }}</span>
+                                </div>
+
+                                <!-- Employee Information Section -->
+                                <div style="margin-bottom: 14px; font-size: 10px; line-height: 1.3;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <div style="flex: 0 0 48%;">
+                                            <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Name:</span>
+                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 190px); text-align: left; color: #333; padding: 0px 0; margin-left: 2px;">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->middle_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</span>
+                                        </div>
+                                        <div style="flex: 0 0 48%;">
+                                            <span style="font-family: Arial; font-size: 13px;  font-weight: bold; color: #000;">College/Campus/Office/Unit:</span>
+                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 290px); text-align: left; color: #333; padding: 1px 0;">{{ auth()->user()->department ?? 'N/A' }}</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        @php
+                                            $regularizedAt = auth()->user()->regularized_at ?? null;
+                                            $yearsInPosition = $regularizedAt
+                                                ? (int) \Carbon\Carbon::parse($regularizedAt)->diffInYears(now())
+                                                : null;
+                                        @endphp
+                                        <div style="flex: 0 0 48%;">
+                                            <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Position:</span>
+                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 200px); text-align: left; color: #333; padding: 1px 0; ">{{ auth()->user()->role ?? 'N/A' }}</span>
+                                        </div>
+                                        <div style="flex: 0 0 48%;">
+                                            <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Years in Position:</span>
+                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 220px); text-align: left; color: #333; padding: 0px 0;">{{ $yearsInPosition !== null ? $yearsInPosition . ' years' : '' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Objectives Table -->
+                                @php
+                                    $allObjectives = ($idapObjectives ?? $objectives)->toArray();
+                                    $objectivesPerPage = 3;
+                                    $paginatedObjectives = array_chunk($allObjectives, $objectivesPerPage);
+                                @endphp
+
+                                <!-- First Page Table -->
+                                @if(isset($paginatedObjectives[0]))
+                                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
+                                        <thead>
+                                            <tr style="background-color: #fff;">
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
+                                            </tr>
+                                            <tr style="background-color: #f9f9f9;">
+                                                <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($paginatedObjectives[0] as $objective)
+                                                <tr>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['objective'], 35) }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['action_plan'], 35) }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center; color: #333;">
+                                                        @if(!empty($objective['budget_requirement']))
+                                                            {{ number_format($objective['budget_requirement'], 2) }}
+                                                        @else
+                                                            __________
+                                                        @endif
+                                                    </td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q1' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">
+                                                        @if(!empty($objective['support_required']))
+                                                            {{ Illuminate\Support\Str::limit($objective['support_required'], 20) }}
+                                                        @else
+                                                            __________
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+
+                                <!-- Signature Section - Only on first page if it's the only page -->
+                                @if(count($paginatedObjectives) == 1)
+                                    <div style="page-break-inside: avoid; display: flex; justify-content: space-between; margin-top: 32px; font-size: 9px; gap: 40px;">
+                                        <div style="flex: 1; text-align: left;">
+                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Prepared by:</p>
+                                            <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Employee</p>
+                                        </div>
+                                        <div style="flex: 1; text-align: left;">
+                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Reviewed by:</p>
+                                            <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Department Chair / Immediate Supervisor</p>
+                                        </div>
+                                        <div style="flex: 1; text-align: left;">
+                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Approved by:</p>
+                                            <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Dean/Director/Unit Head</p>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                </div><!-- close page-content-body -->
+
+                                <!-- Footer -->
+                                <div class="page-footer-ref" style="font-family: Arial; font-size: 12px; text-align: right; margin-top: 20px; color: #999;">
+                                    V02-2025-10-27
+                                </div>
+                            </div><!-- Close first page -->
+
+                            @for($pageIndex = 1; $pageIndex < count($paginatedObjectives); $pageIndex++)
+                                @php
+                                    $pageObjectives = $paginatedObjectives[$pageIndex];
+                                @endphp
+                                
+                                <!-- Start page {{ $pageIndex + 1 }} -->
+                                <div class="a4-page">
+                                    <!-- Document Reference Number - Top Right -->
+                                    <div class="page-header-ref text-right" style="font-family: Arial; font-size: 12px; font-style: italic; color: #999; margin-bottom: 4px;">
+                                        HRDO-QF-26
+                                    </div>
+                                    
+                                    <div class="page-content-body">
+                                    
+                                    <!-- Repeat Header on Subsequent Pages -->
+                                    <div class="flex items-center justify-center mb-6 pb-4" style="border-bottom: 2px solid #666; gap: 2px; display: flex; align-items: flex-start; justify-content: center;">
+                                            <!-- CVSU Logo -->
+                                            <div style="width: 110px; text-align: center; flex-shrink: 0; padding-top: 0;">
+                                                @if(file_exists(public_path('images/cvsu-logo.png')))
+                                                    <img src="{{ asset('images/cvsu-logo.png') }}" alt="CVSU Logo" style="width: 110px; height: 110px; object-fit: contain; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                                @else
+                                                    <svg viewBox="0 0 100 100" style="width: 110px; height: 110px; display: block; margin: 0 auto; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                                        <defs>
+                                                            <linearGradient id="cvsuGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" style="stop-color:#4a7c59;stop-opacity:1" />
+                                                                <stop offset="100%" style="stop-color:#2d5016;stop-opacity:1" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <polygon points="50,5 95,50 50,95 5,50" fill="url(#cvsuGrad2)" stroke="#1a3a0a" stroke-width="2"/>
+                                                        <polygon points="50,15 85,50 50,85 15,50" fill="#a8d5a8" stroke="none"/>
+                                                        <circle cx="50" cy="45" r="8" fill="#f5b041"/>
+                                                        <path d="M 50 30 Q 45 35 45 42 Q 45 50 50 55 Q 55 50 55 42 Q 55 35 50 30" fill="#ff8c00"/>
+                                                        <circle cx="50" cy="38" r="5" fill="#ffd700"/>
+                                                    </svg>
+                                                @endif
+                                            </div>
+
+                                            <!-- Center Header Text -->
+                                            <div style="text-align: center; padding: 0;">
+                                                <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 0;">Republic of the Philippines</p>
+                                                <h1 style="font-family: Bookman Old Style; font-size: 17px; font-weight: bold; color: #000000; margin: 2px 0;">CAVITE STATE UNIVERSITY</h1>
+                                                <p style="font-family: Arial; font-size: 12px; font-weight: bold; color: #000000; margin: 2px 0; line-height: 1;">Don Severino de las Alas Campus</p>
+                                                <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 1px 0; line-height: 1;">Indang, Cavite</p>
+                                                <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 0; line-height: 1;">(046) 483-9250</p>
+                                                <a href="https://www.cvsu.edu.ph" style="font-family: Arial; font-size: 12px; font-style: italic; color: #2563eb; text-decoration: underline; margin: 0; display: block; line-height: 1;">www.cvsu.edu.ph</a>
+                                                <p style="font-family: Arial; font-size: 15px; font-weight: bold; color: #000000; margin-top: 30px;">HUMAN RESOURCE DEVELOPMENT OFFICE</p>
+                                            </div>
+
+                                            <!-- Bagong Pilipinas Logo -->
+                                            <div style="width: 110px; text-align: center; flex-shrink: 0; padding-top: 0;">
+                                                @if(file_exists(public_path('images/bagong-pilipinas-logo.png')))
+                                                    <img src="{{ asset('images/bagong-pilipinas-logo.png') }}" alt="Bagong Pilipinas Logo" style="width: 110px; height: 110px; object-fit: contain; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                                @else
+                                                    <svg viewBox="0 0 100 100" style="width: 110px; height: 110px; display: block; margin: 0 auto; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+                                                        <defs>
+                                                            <linearGradient id="bpGradTop2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                                                                <stop offset="100%" style="stop-color:#ffed4e;stop-opacity:1" />
+                                                            </linearGradient>
+                                                            <linearGradient id="bpGradBot2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                                <stop offset="0%" style="stop-color:#1f4788;stop-opacity:1" />
+                                                                <stop offset="50%" style="stop-color:#c41e3a;stop-opacity:1" />
+                                                                <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <circle cx="50" cy="35" r="22" fill="url(#bpGradTop2)"/>
+                                                        <path d="M 35 50 Q 30 60 35 75 Q 50 85 65 75 Q 70 60 65 50 Z" fill="url(#bpGradBot2)"/>
+                                                        <circle cx="50" cy="65" r="8" fill="#ffd700"/>
+                                                    </svg>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Document Title -->
+                                        <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 13px; letter-spacing: 0.5px;">INDIVIDUAL DEVELOPMENT AND ACTION PLAN</h2>
+                                        <div style="text-align: center; margin-bottom: 12px; font-size: 11px;">
+                                            <span style="font-family: Arial; font-weight: bold; color: #000;">{{ $displayYear }}</span>
+                                        </div>
+                                    
+                                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
+                                        <thead>
+                                            <tr style="background-color: #fff;">
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
+                                            </tr>
+                                            <tr style="background-color: #f9f9f9;">
+                                                <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(count($pageObjectives) > 0)
+                                                @foreach($pageObjectives as $objective)
+                                                    <tr>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['objective'], 35) }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['action_plan'], 35) }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center; color: #333;">
+                                                            @if(!empty($objective['budget_requirement']))
+                                                                {{ number_format($objective['budget_requirement'], 2) }}
+                                                            @else
+                                                                __________
+                                                            @endif
+                                                        </td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q1' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">
+                                                            @if(!empty($objective['support_required']))
+                                                                {{ Illuminate\Support\Str::limit($objective['support_required'], 20) }}
+                                                            @else
+                                                                __________
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                @for($i = 1; $i <= 3; $i++)
+                                                    <tr>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">{{ $i }}. ___________________________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">___________________________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                    </tr>
+                                                @endfor
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    
+                                    <!-- Signature Section - Only on last page -->
+                                    @if($pageIndex == count($paginatedObjectives) - 1)
+                                        <div style="page-break-inside: avoid; display: flex; justify-content: space-between; margin-top: 32px; font-size: 9px; gap: 40px;">
+                                            <div style="flex: 1; text-align: left;">
+                                                <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Prepared by:</p>
+                                                <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                                <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Employee</p>
+                                            </div>
+                                            <div style="flex: 1; text-align: left;">
+                                                <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Reviewed by:</p>
+                                                <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                                <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Department Chair / Immediate Supervisor</p>
+                                            </div>
+                                            <div style="flex: 1; text-align: left;">
+                                                <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Approved by:</p>
+                                                <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                                <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Dean/Director/Unit Head</p>
+                                            </div>
+                                        </div>
+                                        
+                                    @endif
+                                    </div><!-- close page-content-body -->
+
+                                    <!-- Footer -->
+                                    <div class="page-footer-ref" style="font-family: Arial; font-size: 12px; text-align: right; margin-top: 20px; color: #999;">
+                                        V02-2025-10-27
+                                    </div>
+                                </div><!-- Close page {{ $pageIndex + 1 }} -->
+                            @endfor
+
+                            @if(count($paginatedObjectives) == 0)
+                                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
+                                        <thead>
+                                            <tr style="background-color: #fff;">
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; width: 18%; color: #000; font-size: 13px; font-weight: normal;">DEVELOPMENT OBJECTIVES / TARGET</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; font-size: 13px; font-weight: normal;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal;">SUPPORT REQUIRED</th>
+                                            </tr>
+                                            <tr style="background-color: #f9f9f9;">
+                                                <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for($i = 1; $i <= 3; $i++)
+                                                <tr>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">{{ $i }}. ___________________________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">___________________________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                </tr>
+                                            @endfor
+                                        </tbody>
+                                    </table>
+                                </div><!-- Close first page for empty state -->
+                            @endif
+
+                        </div><!-- Close idapDocument -->
+
+                        <!-- Action Buttons -->
+                        <div class="bg-white border-t border-gray-200 p-4 flex items-center justify-center gap-3 sticky bottom-0">
+                            <button id="printIdapButton" class="btn-primary text-white px-6 py-2 rounded hover:bg-orange-600 transition flex items-center gap-2">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H7a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2zm0 0h2a2 2 0 002-2m0 0V9" />
+                                </svg>
+                                Print
+                            </button>
+                            <button id="closeIdapModal2" class="btn-danger text-white px-6 py-2 rounded hover:bg-red-700 transition flex items-center gap-2" style="background-color: #6b7280;">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -566,6 +1077,190 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = event.currentTarget.files && event.currentTarget.files[0];
             target.textContent = file ? file.name : 'No file selected';
         });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadForms = document.querySelectorAll('form[data-upload-form]');
+
+    uploadForms.forEach((form) => {
+        const fileInput = form.querySelector('input[type="file"][name="file"]');
+        const uploadSubmit = form.querySelector('button[data-upload-submit]');
+
+        if (!fileInput || !uploadSubmit) {
+            return;
+        }
+
+        uploadSubmit.addEventListener('click', (event) => {
+            if (uploadSubmit.disabled) {
+                return;
+            }
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                event.preventDefault();
+                fileInput.click();
+            }
+        });
+    });
+});
+
+// IDAP Modal functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const idapModal = document.getElementById('idapModal');
+    const openIdapModal = document.getElementById('openIdapModal');
+    const closeIdapModal = document.getElementById('closeIdapModal');
+    const closeIdapModal2 = document.getElementById('closeIdapModal2');
+    const printIdapButton = document.getElementById('printIdapButton');
+    const idapYearSelect = document.getElementById('idapYearSelect');
+
+    if (!idapModal || !openIdapModal) return;
+
+    // Open modal
+    openIdapModal.addEventListener('click', (event) => {
+        event.preventDefault();
+        idapModal.classList.remove('hidden');
+    });
+
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get('openIdap') === '1') {
+        idapModal.classList.remove('hidden');
+    }
+
+    if (idapYearSelect) {
+        idapYearSelect.addEventListener('change', () => {
+            const params = new URLSearchParams(window.location.search);
+            params.set('year', idapYearSelect.value);
+            params.set('openIdap', '1');
+            window.location = `{{ route('development-objectives.list') }}?${params.toString()}`;
+        });
+    }
+
+    // Close modal
+    const closeModal = () => {
+        idapModal.classList.add('hidden');
+    };
+
+    if (closeIdapModal) {
+        closeIdapModal.addEventListener('click', closeModal);
+    }
+    if (closeIdapModal2) {
+        closeIdapModal2.addEventListener('click', closeModal);
+    }
+
+    // Close modal when clicking outside
+    idapModal.addEventListener('click', (event) => {
+        if (event.target === idapModal) {
+            closeModal();
+        }
+    });
+
+    // Print functionality - open new window with document content and all styles
+    if (!printIdapButton) {
+        return;
+    }
+
+    printIdapButton.addEventListener('click', () => {
+        const documentContent = document.getElementById('idapDocument').innerHTML;
+        const printWindow = window.open('', '_blank', 'width=1100,height=800');
+        
+        printWindow.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Individual Development and Action Plan</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <style>
+        @page {
+            size: landscape;
+            margin: 1in 1in 0.3in 1in;
+        }
+        
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        /* A4 Page Container Styles - screen view */
+        .a4-page {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 1056px;
+            margin: 0 auto 30px auto;
+            background-color: white;
+            padding: 96px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-content-body {
+            flex: 1;
+        }
+
+        .page-footer-ref {
+            margin-top: auto;
+        }
+        
+        .a4-page:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Print-specific overrides */
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .a4-page {
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+                width: 100%;
+                min-height: 100vh;
+                box-shadow: none;
+                page-break-after: always;
+                break-after: page;
+            }
+            
+            .a4-page:last-child {
+                page-break-after: auto;
+                break-after: auto;
+            }
+            
+            table {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                width: 100%;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    ${documentContent}
+</body>
+</html>`);
+        
+        printWindow.document.close();
+        
+        // Wait for Tailwind to load before printing
+        printWindow.onload = () => {
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        };
     });
 });
 </script>

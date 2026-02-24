@@ -305,10 +305,87 @@
                                 @enderror
                             </div>
 
-                            <!-- File Count Selection -->
+                            <!-- Budget Requirement -->
                             <div class="form-step">
                                 <div class="flex items-center gap-3 mb-3">
                                     <span class="step-badge">3</span>
+                                    <h3 class="step-title">Budget Requirement</h3>
+                                </div>
+                                <input
+                                    type="number"
+                                    id="budget_requirement"
+                                    name="budget_requirement"
+                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                    placeholder="Enter budget requirement..."
+                                    min="0"
+                                    step="0.01"
+                                >
+                                <p class="step-helper">Enter the estimated budget required for this objective</p>
+                                @error('budget_requirement')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Target Period -->
+                            <div class="form-step">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="step-badge">4</span>
+                                    <h3 class="step-title">Target Period</h3>
+                                </div>
+                                <div class="custom-select w-full" data-custom-select="target_period">
+                                    <select
+                                        id="target_period"
+                                        name="target_period"
+                                        class="custom-select-native"
+                                    >
+                                        <option value="" selected disabled hidden>Select target period</option>
+                                        <option value="Q1">Q1</option>
+                                        <option value="Q2">Q2</option>
+                                        <option value="Q3">Q3</option>
+                                        <option value="Q4">Q4</option>
+                                    </select>
+                                    <button type="button" class="custom-select-trigger input-field w-full px-4 py-2.5 text-gray-700">
+                                        <span class="custom-select-label">Select target period</span>
+                                        <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.96a.75.75 0 111.08 1.04l-4.24 4.52a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    <div class="custom-select-menu">
+                                        <button type="button" class="custom-select-option" data-select-value="Q1">Q1</button>
+                                        <button type="button" class="custom-select-option" data-select-value="Q2">Q2</button>
+                                        <button type="button" class="custom-select-option" data-select-value="Q3">Q3</button>
+                                        <button type="button" class="custom-select-option" data-select-value="Q4">Q4</button>
+                                    </div>
+                                </div>
+                                <p class="step-helper">Select the quarter when you plan to complete this objective</p>
+                                @error('target_period')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Support Required -->
+                            <div class="form-step">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="step-badge">5</span>
+                                    <h3 class="step-title">Support Required</h3>
+                                </div>
+                                <input
+                                    type="text"
+                                    id="support_required"
+                                    name="support_required"
+                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                    placeholder="Enter support required..."
+                                >
+                                <p class="step-helper">Describe any support or resources needed to achieve this objective</p>
+                                @error('support_required')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- File Count Selection -->
+                            <div class="form-step">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="step-badge">6</span>
                                     <h3 class="step-title">Number of Files to Upload</h3>
                                 </div>
                                 <div class="custom-select w-full" data-custom-select="max_files">

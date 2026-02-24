@@ -148,8 +148,17 @@ class ChairpersonController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
+
+        $totalFaculty = $facultyMembers->count();
+        $allFacultyIds = $facultyMembers->pluck('id');
+        $totalFiles = \App\Models\DevelopmentObjectiveFile::whereHas('developmentObjective', function($q) use ($allFacultyIds) {
+            $q->whereIn('user_id', $allFacultyIds);
+        })->count();
+        $pendingVerification = \App\Models\DevelopmentObjectiveFile::whereHas('developmentObjective', function($q) use ($allFacultyIds) {
+            $q->whereIn('user_id', $allFacultyIds);
+        })->where('verification_status', 'pending')->count();
         
-        return view('chairperson.department-reports', compact('facultyMembers'));
+        return view('chairperson.department-reports', compact('facultyMembers', 'totalFaculty', 'totalFiles', 'pendingVerification'));
     }
     
     /**

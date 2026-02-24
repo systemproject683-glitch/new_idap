@@ -36,7 +36,30 @@ class DevelopmentObjectiveController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('development-objectives.list', compact('objectives'));
+        $availableYears = $objectives
+            ->filter(function ($objective) {
+                return $objective->created_at !== null;
+            })
+            ->map(function ($objective) {
+                return $objective->created_at->format('Y');
+            })
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        $selectedYear = request()->query('year');
+        if (empty($selectedYear)) {
+            $selectedYear = $availableYears->first() ?? now()->format('Y');
+        }
+
+        $idapObjectives = $objectives
+            ->filter(function ($objective) use ($selectedYear) {
+                return $objective->created_at !== null
+                    && $objective->created_at->format('Y') === (string) $selectedYear;
+            })
+            ->values();
+
+        return view('development-objectives.list', compact('objectives', 'availableYears', 'selectedYear', 'idapObjectives'));
     }
 
     /**
@@ -71,6 +94,9 @@ class DevelopmentObjectiveController extends Controller
         $request->validate([
             'objective' => 'required|string',
             'action_plan' => 'required|string',
+            'budget_requirement' => 'nullable|numeric|min:0',
+            'target_period' => 'nullable|string|in:Q1,Q2,Q3,Q4',
+            'support_required' => 'nullable|string',
             'max_files' => 'required|integer|min:1|max:3',
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ]);
@@ -116,6 +142,9 @@ class DevelopmentObjectiveController extends Controller
             'user_id' => $user->id,
             'objective' => $objectiveName,
             'action_plan' => $request->action_plan,
+            'budget_requirement' => $request->budget_requirement,
+            'target_period' => $request->target_period,
+            'support_required' => $request->support_required,
             'status' => 'pending',
             'is_admin_created' => false,
             'file_path' => $filePath,

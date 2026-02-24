@@ -223,7 +223,7 @@
                                             <td class="py-4 px-4">
                                                 <div class="action-links flex gap-2 text-sm">
                                                     <button 
-                                                        onclick="openEditModal({{ $user->id }}, '{{ $user->first_name }}', '{{ $user->middle_name }}', '{{ $user->last_name }}', '{{ $user->email }}', '{{ $user->department }}', '{{ $user->role }}')" 
+                                                        onclick="openEditModal({{ $user->id }}, '{{ $user->first_name }}', '{{ $user->middle_name }}', '{{ $user->last_name }}', '{{ $user->email }}', '{{ $user->department }}', '{{ $user->role }}', '{{ optional($user->regularized_at)->format('Y-m-d') }}')" 
                                                         class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer bg-transparent border-0 p-0"
                                                     >
                                                         Edit
@@ -371,6 +371,18 @@
                             <option value="chairperson">Chairperson</option>
                         </select>
                     </div>
+
+                    <div class="mb-6">
+                        <label for="edit_regularized_at" class="block text-gray-700 text-sm font-medium mb-2">
+                            Regularization Date
+                        </label>
+                        <input
+                            type="date"
+                            id="edit_regularized_at"
+                            name="regularized_at"
+                            class="input-field w-full px-4 py-3 text-gray-700"
+                        >
+                    </div>
                     
                     <!-- Password Field (Optional) -->
                     <div class="mb-6">
@@ -421,7 +433,7 @@
         let currentEditingUserDept = null;
         let currentEditingUserRole = null;
 
-        function openEditModal(userId, firstName, middleName, lastName, email, department, role) {
+        function openEditModal(userId, firstName, middleName, lastName, email, department, role, regularizedAt) {
             // Store current editing user info
             currentEditingUserId = userId;
             currentEditingUserDept = department;
@@ -437,6 +449,7 @@
             document.getElementById('edit_email').value = email;
             document.getElementById('edit_department').value = department;
             document.getElementById('edit_role').value = role;
+            document.getElementById('edit_regularized_at').value = regularizedAt || '';
             
             // Clear password fields
             document.getElementById('edit_password').value = '';

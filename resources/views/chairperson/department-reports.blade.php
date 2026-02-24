@@ -62,6 +62,43 @@
                     <p class="text-gray-600 mt-2">View all faculty members and their uploaded files for development objectives</p>
                 </div>
 
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="card p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Total Faculty</p>
+                            <p class="text-2xl font-bold text-gray-800">{{ $totalFaculty }}</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #e8eaf6;">
+                            <svg class="w-6 h-6" style="color: #5c6bc0;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Total Files Uploaded</p>
+                            <p class="text-2xl font-bold text-gray-800">{{ $totalFiles }}</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #e8f5e9;">
+                            <svg class="w-6 h-6" style="color: #66bb6a;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Pending Verification</p>
+                            <p class="text-2xl font-bold {{ $pendingVerification > 0 ? 'text-orange-500' : 'text-gray-800' }}">{{ $pendingVerification }}</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #fff8e1;">
+                            <svg class="w-6 h-6" style="color: #ffa726;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 2v6l2 2-2 2v6h12v-6l-2-2 2-2V2H6zm10 14.5V20H8v-3.5l2-2 2 2 2-2 2 2zM16 9.5l-2 2-2-2-2 2V4h8v5.5l-2-2z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Faculty Members with Files -->
                 @if($facultyMembers->count() > 0)
                     @foreach($facultyMembers as $faculty)

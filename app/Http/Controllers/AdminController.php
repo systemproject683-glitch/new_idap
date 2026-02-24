@@ -48,7 +48,7 @@ class AdminController extends Controller
         ])->onlyInput('email');
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $totalDevelopmentObjectives = DevelopmentObjective::count();
         
@@ -86,7 +86,41 @@ class AdminController extends Controller
             ];
         }
         
-        return view('admin.dashboard', compact('totalDevelopmentObjectives', 'recentActivities', 'departmentData'));
+        $allObjectives = DevelopmentObjective::with('user')->get();
+        $facultyPlanAvailableYears = $allObjectives
+            ->map(function ($objective) {
+                return $objective->created_at ? (int) $objective->created_at->format('Y') : null;
+            })
+            ->filter()
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        $facultyPlanSelectedYear = $request->query('fpYear');
+        if ($facultyPlanSelectedYear !== null) {
+            $facultyPlanSelectedYear = (int) $facultyPlanSelectedYear;
+        }
+
+        if ($facultyPlanSelectedYear && !$facultyPlanAvailableYears->contains($facultyPlanSelectedYear)) {
+            $facultyPlanSelectedYear = $facultyPlanAvailableYears->first();
+        }
+
+        if (!$facultyPlanSelectedYear) {
+            $facultyPlanSelectedYear = $facultyPlanAvailableYears->first() ?? (int) now()->format('Y');
+        }
+
+        $facultyPlanObjectives = $allObjectives->filter(function ($objective) use ($facultyPlanSelectedYear) {
+            return $objective->created_at && (int) $objective->created_at->format('Y') === $facultyPlanSelectedYear;
+        })->values();
+
+        return view('admin.dashboard', compact(
+            'totalDevelopmentObjectives',
+            'recentActivities',
+            'departmentData',
+            'facultyPlanObjectives',
+            'facultyPlanAvailableYears',
+            'facultyPlanSelectedYear'
+        ));
     }
 
     public function userManagement()
@@ -109,6 +143,7 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'department' => 'required|string|in:DAFE,DCEA,DCEEE,DIET,DIT',
             'role' => 'required|string|in:faculty,chairperson',
+            'regularized_at' => 'nullable|date',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
@@ -132,6 +167,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'department' => $request->department,
             'role' => $request->role,
+            'regularized_at' => $request->input('regularized_at') ?: null,
             'password' => Hash::make($request->password),
         ]);
 
@@ -152,6 +188,7 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'department' => 'required|string|in:DAFE,DCEA,DCEEE,DIET,DIT',
             'role' => 'required|string|in:faculty,chairperson',
+            'regularized_at' => 'nullable|date',
         ]);
 
         // Check if chairperson already exists for this department (excluding current user)
@@ -175,6 +212,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'department' => $request->department,
             'role' => $request->role,
+            'regularized_at' => $request->input('regularized_at') ?: null,
         ]);
 
         if ($request->filled('password')) {
