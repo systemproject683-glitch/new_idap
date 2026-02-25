@@ -59,7 +59,7 @@ class AdminController extends Controller
             ->get()
             ->map(function($objective) {
                 return [
-                    'user' => $objective->user->first_name . ' ' . $objective->user->last_name,
+                    'user' => $objective->user ? $objective->user->first_name . ' ' . $objective->user->last_name : 'Admin',
                     'action' => 'created new development objective',
                     'time' => $objective->created_at
                 ];

@@ -51,7 +51,25 @@ class DevelopmentObjective extends Model
     public static function getPredefinedObjectives()
     {
         return [
-            // No predefined objectives - only admin-created objectives
+            // Graduate Studies
+            'Graduate Studies – Master'       => 'Pursue a Master\'s degree program to advance academic credentials and research capabilities.',
+            'Graduate Studies – Doctorate'     => 'Pursue a Doctorate degree program for advanced scholarly research and academic expertise.',
+            'Graduate Studies – Post-Doctor'   => 'Conduct Post-Doctoral research to further specialise and pioneer contributions in the field.',
+            // Professional Development
+            'ASEAN Engineer/Architect'        => 'Pursue professional engineering or architectural excellence and credentials through ASEAN standards and recognition programs.',
+            'Faculty & Staff Exchange Program' => 'Participate in faculty and staff exchange programs to foster cross-institution collaboration and professional growth.',
+            'Industry Immersion Program'      => 'Engage in industry immersion activities to gain applied, real-world experience and strengthen professional practice.',
+            'Membership in International Organization & Networks' => 'Participate in international professional organizations and networks to expand collaborations, visibility, and global engagement.',
+            'Professorial Chair'              => 'Pursue appointment or recognition as a professorial chair to advance academic leadership and scholarly impact.',
+            'Conduct Researches & Extension Activities' => 'Conduct research projects and participate in extension activities to contribute to knowledge advancement and community service.',
+            // Training & Seminars
+            'Paper Presentation – Local'       => 'Present research papers at local conferences and academic forums to disseminate findings and gain peer feedback.',
+            'Paper Presentation – International' => 'Present research papers at international conferences to showcase work on a global stage and enhance academic visibility.',
+            'Training/Seminar – Local'        => 'Participate in local training and seminar programs to enhance professional skills and knowledge.',
+            'Training/Seminar – International' => 'Attend international training and seminar programs to broaden expertise and global networking opportunities.',
+            // Skills & Certification
+            'Skills Proficiency Certification – Local'        => 'Obtain local professional certifications and credentials to validate technical competencies and industry standards.',
+            'Skills Proficiency Certification – International' => 'Achieve international professional certifications and credentials to demonstrate global competency and recognition.',
         ];
     }
 

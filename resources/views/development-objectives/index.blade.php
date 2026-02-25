@@ -357,6 +357,231 @@
                         </a>
                     </div>
 
+                    <!-- ═══════════════════════════════════════════════════════
+                         HARDCODED DEVELOPMENT OBJECTIVES / TARGETS
+                    ═══════════════════════════════════════════════════════ -->
+                    <div class="mb-10">
+                        <div class="flex items-center gap-2 mb-5">
+                            <svg class="h-5 w-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <h2 class="text-lg font-bold text-orange-600">Development Objectives / Targets</h2>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+
+                            <!-- ── GRADUATE STUDIES (has sub-objectives → opens modal) ── -->
+                            <button type="button"
+                                onclick="openSubModal('Graduate Studies', ['Master','Doctorate','Post-Doctor'])"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Graduation cap icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422A12.083 12.083 0 0121 13.5V17a2 2 0 01-2 2H5a2 2 0 01-2-2v-3.5c0-.424.09-.835.25-1.21L12 14z"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Graduate Studies</div>
+                                <p class="text-gray-500 text-xs mt-1">Master · Doctorate · Post-Doctor</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Choose sub-target
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── ASEAN ENGINEER / ARCHITECT ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('ASEAN Engineer/Architect')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Building icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                                        <polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2"/>
+                                        <polyline points="7 5 7 13 17 13 17 5" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">ASEAN Engineer/Architect</div>
+                                <p class="text-gray-500 text-xs mt-1">Professional engineering excellence</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Select
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── FACULTY & STAFF EXCHANGE PROGRAM ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('Faculty & Staff Exchange Program')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- People exchange icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20H7a4 4 0 01-4-4v-1a4 4 0 014-4h10a4 4 0 014 4v1a4 4 0 01-4 4z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7a3 3 0 100-6 3 3 0 000 6z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 8l2 2-2 2"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-3"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l-2 2 2 2"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 14h3"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Faculty &amp; Staff Exchange Program</div>
+                                <p class="text-gray-500 text-xs mt-1">Cross-institution collaboration</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Select
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── INDUSTRY IMMERSION PROGRAM ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('Industry Immersion Program')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Industry icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21V9l7-4 7 4v12"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 21v-6h6v6"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Industry Immersion Program</div>
+                                <p class="text-gray-500 text-xs mt-1">Applied industry experience</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Select
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── MEMBERSHIP IN INTERNATIONAL ORGANIZATION & NETWORKS ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('Membership in International Organization & Networks')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Network icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <circle cx="12" cy="5" r="3" stroke-width="2" />
+                                        <circle cx="5" cy="19" r="3" stroke-width="2" />
+                                        <circle cx="19" cy="19" r="3" stroke-width="2" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 7.5l-2.5 7M14.5 7.5l2.5 7M8 17h8"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Membership in International Organization &amp; Networks</div>
+                                <p class="text-gray-500 text-xs mt-1">Global professional engagement</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Select
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── PROFESSORIAL CHAIR ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('Professorial Chair')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Academic honor icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422A12.083 12.083 0 0121 13.5V17a2 2 0 01-2 2H5a2 2 0 01-2-2v-3.5c0-.424.09-.835.25-1.21L12 14z"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Professorial Chair</div>
+                                <p class="text-gray-500 text-xs mt-1">Academic leadership recognition</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Select
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── CONDUCT RESEARCHES & EXTENSION ACTIVITIES ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('Conduct Researches & Extension Activities')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Research/beaker icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Conduct Researches &amp; Extension Activities</div>
+                                <p class="text-gray-500 text-xs mt-1">Research and community engagement</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Select
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── PAPER PRESENTATION (has sub-objectives → opens modal) ── -->
+                            <button type="button"
+                                onclick="openSubModal('Paper Presentation', ['Local','International'])"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Presentation icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12.414V7a4 4 0 014-4z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Paper Presentation</div>
+                                <p class="text-gray-500 text-xs mt-1">Local · International</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Choose sub-target
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── TRAINING / SEMINAR (has sub-objectives → opens modal) ── -->
+                            <button type="button"
+                                onclick="openSubModal('Training/Seminar', ['Local','International'])"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Seminar/training icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Training/Seminar</div>
+                                <p class="text-gray-500 text-xs mt-1">Local · International</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Choose sub-target
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── SKILLS PROFICIENCY CERTIFICATION (has sub-objectives → opens modal) ── -->
+                            <button type="button"
+                                onclick="openSubModal('Skills Proficiency Certification', ['Local','International'])"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Certificate/badge icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7 12a5 5 0 1110 0A5 5 0 017 12z"/>
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Skills Proficiency Certification</div>
+                                <p class="text-gray-500 text-xs mt-1">Local · International</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Choose sub-target
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
+                            <!-- ── Placeholder cards for future targets ── -->
+                            <!-- You can copy the pattern above for targets without sub-objectives -->
+                            <!-- Example of a single-target card (no modal): -->
+                            {{-- 
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=Research+Publication'"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Research Publication</div>
+                            </button>
+                            --}}
+
+                        </div>
+                    </div>
+                    <!-- ═══════════════════════════════════════════════════════ -->
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
                         <div class="card border-l-4 border-orange-500">
                             <div class="p-6 border-b border-gray-200">
@@ -475,10 +700,127 @@
             </div>
         </div>
     </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SUB-OBJECTIVE MODAL
+    ══════════════════════════════════════════════════════════════ -->
+    <div id="sub-objective-modal"
+         class="fixed inset-0 z-50 flex items-center justify-center hidden"
+         aria-modal="true" role="dialog" aria-labelledby="sub-modal-title">
+
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+             onclick="closeSubModal()"></div>
+
+        <!-- Dialog panel -->
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 animate-modal">
+
+            <!-- Close button -->
+            <button type="button" onclick="closeSubModal()"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <!-- Header -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600 flex-shrink-0">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422A12.083 12.083 0 0121 13.5V17a2 2 0 01-2 2H5a2 2 0 01-2-2v-3.5c0-.424.09-.835.25-1.21L12 14z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sub-modal-title" class="text-lg font-bold text-gray-800"></h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Select a sub-target to continue</p>
+                </div>
+            </div>
+
+            <!-- Sub-objective choices (rendered by JS) -->
+            <div id="sub-modal-options" class="space-y-3"></div>
+
+            <!-- Cancel -->
+            <button type="button" onclick="closeSubModal()"
+                    class="mt-6 w-full py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition font-medium">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes modal-in {
+            from { opacity: 0; transform: scale(0.95) translateY(8px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);    }
+        }
+        .animate-modal { animation: modal-in 0.18s ease both; }
+    </style>
+
 </body>
 </html>
 
 <script>
+/* ── Sub-objective modal ─────────────────────────────────────────── */
+function openSubModal(parentTitle, subOptions) {
+    const modal  = document.getElementById('sub-objective-modal');
+    const title  = document.getElementById('sub-modal-title');
+    const opts   = document.getElementById('sub-modal-options');
+
+    title.textContent = parentTitle;
+    opts.innerHTML    = '';
+
+    const addRoute = @json(route('development-objectives.add'));
+
+    subOptions.forEach(sub => {
+        const btn = document.createElement('button');
+        btn.type  = 'button';
+        btn.className =
+            'w-full flex items-center justify-between px-5 py-4 rounded-xl ' +
+            'border border-gray-100 bg-white hover:bg-orange-50 hover:border-orange-300 ' +
+            'transition group text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400';
+
+        btn.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="h-8 w-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 group-hover:bg-orange-100 transition">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+                <span class="font-semibold text-gray-800 text-sm">${sub}</span>
+            </div>
+            <svg class="h-4 w-4 text-gray-300 group-hover:text-orange-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>`;
+
+        btn.addEventListener('click', () => {
+            const fullObjective = encodeURIComponent(parentTitle + ' – ' + sub);
+            window.location.href = addRoute + '?objective=' + fullObjective;
+        });
+
+        opts.appendChild(btn);
+    });
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Re-trigger animation
+    const panel = modal.querySelector('.animate-modal');
+    panel.style.animation = 'none';
+    panel.offsetHeight; // reflow
+    panel.style.animation = '';
+}
+
+function closeSubModal() {
+    document.getElementById('sub-objective-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeSubModal();
+});
+/* ─────────────────────────────────────────────────────────────────── */
+
 document.addEventListener('DOMContentLoaded', () => {
     const alertPopup = document.getElementById('alert-popup');
     if (alertPopup) {

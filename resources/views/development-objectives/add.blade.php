@@ -227,19 +227,20 @@
                                         onchange="updateActionPlan()"
                                     >
                                         <option value="">Select Objective</option>
+                                        @php $preSelected = old('objective', request('objective')); @endphp
                                         @if(count($predefinedObjectives) > 0)
                                             <optgroup label="Predefined Objectives">
                                                 @foreach($predefinedObjectives as $objective => $actionPlan)
-                                                    <option value="{{ $objective }}">{{ $objective }}</option>
+                                                    <option value="{{ $objective }}" {{ $preSelected === $objective ? 'selected' : '' }}>{{ $objective }}</option>
                                                 @endforeach
                                             </optgroup>
                                         @endif
                                         @if($adminObjectives->count() > 0)
                                             @foreach($adminObjectives as $objective)
-                                                <option value="{{ $objective->objective }}">{{ $objective->objective }}</option>
+                                                <option value="{{ $objective->objective }}" {{ $preSelected === $objective->objective ? 'selected' : '' }}>{{ $objective->objective }}</option>
                                             @endforeach
                                         @endif
-                                        <option value="Other">Other (Specify your own objective)</option>
+                                        <option value="Other" {{ $preSelected === 'Other' ? 'selected' : '' }}>Other (Specify your own objective)</option>
                                     </select>
                                     <button type="button" class="custom-select-trigger input-field w-full px-4 py-2.5 text-gray-700">
                                         <span class="custom-select-label">Select Objective</span>
@@ -533,5 +534,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initCustomSelects();
+
+    // Pre-select objective coming from the query string (e.g., from Graduate Studies modal)
+    // but do NOT auto-fill the action plan - faculty member must enter their own
+    const preSelected = new URLSearchParams(window.location.search).get('objective');
+    if (preSelected) {
+        const sel = document.getElementById('objective');
+        if (sel) {
+            sel.value = preSelected;
+            // Update label without triggering updateActionPlan (so action plan is NOT auto-filled)
+            document.querySelectorAll('[data-custom-select]').forEach(wrapper => {
+                const wrapSel = wrapper.querySelector('select');
+                const lbl     = wrapper.querySelector('.custom-select-label');
+                if (wrapSel && lbl && wrapSel.id === 'objective') {
+                    const opt = wrapSel.options[wrapSel.selectedIndex];
+                    if (opt && opt.textContent.trim()) lbl.textContent = opt.textContent.trim();
+                }
+            });
+        }
+    }
 });
 </script>
