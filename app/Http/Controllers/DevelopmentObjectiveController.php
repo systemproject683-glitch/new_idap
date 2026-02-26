@@ -94,6 +94,7 @@ class DevelopmentObjectiveController extends Controller
         $request->validate([
             'objective' => 'required|string',
             'action_plan' => 'required|string',
+            'number_of_hours' => 'required|integer|min:0',
             'budget_requirement' => 'nullable|numeric|min:0',
             'target_period' => 'nullable|string|in:Q1,Q2,Q3,Q4',
             'support_required' => 'nullable|string',
@@ -142,6 +143,7 @@ class DevelopmentObjectiveController extends Controller
             'user_id' => $user->id,
             'objective' => $objectiveName,
             'action_plan' => $request->action_plan,
+            'number_of_hours' => $request->number_of_hours,
             'budget_requirement' => $request->budget_requirement,
             'target_period' => $request->target_period,
             'support_required' => $request->support_required,

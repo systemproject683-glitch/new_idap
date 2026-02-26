@@ -123,6 +123,7 @@
                                         <tr class="border-b border-gray-200">
                                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Faculty Member</th>
                                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Objective</th>
+                                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Hours</th>
                                             <th class="text-left py-3 px-4 font-semibold text-gray-700">File Name</th>
                                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Uploaded</th>
                                             <th class="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
@@ -146,6 +147,11 @@
                                                 </td>
                                                 <td class="py-3 px-4">
                                                     <p class="text-gray-900">{{ \Illuminate\Support\Str::limit($file->developmentObjective->objective, 50) }}</p>
+                                                </td>
+                                                <td class="py-3 px-4">
+                                                    <p class="text-gray-600 text-sm">
+                                                        {{ $file->developmentObjective->number_of_hours !== null ? $file->developmentObjective->number_of_hours . ' hrs' : 'N/A' }}
+                                                    </p>
                                                 </td>
                                                 <td class="py-3 px-4">
                                                     <p class="text-gray-600 text-sm">{{ $file->file_name }}</p>

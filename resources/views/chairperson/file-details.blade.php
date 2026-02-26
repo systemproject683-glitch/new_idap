@@ -107,6 +107,9 @@
                             <h3 class="text-sm font-medium text-gray-500 mb-2">Development Objective</h3>
                             <p class="text-gray-900">{{ $file->developmentObjective->objective }}</p>
                             <p class="text-sm text-gray-600 mt-2">{{ $file->developmentObjective->action_plan }}</p>
+                            <p class="text-sm text-gray-600 mt-2">
+                                Hours: {{ $file->developmentObjective->number_of_hours !== null ? $file->developmentObjective->number_of_hours . ' hrs' : 'N/A' }}
+                            </p>
                         </div>
                         
                         <div class="mt-6">

@@ -173,6 +173,9 @@
                                             <div class="flex-1">
                                                 <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $objective->objective }}</h3>
                                                 <p class="text-gray-600 mb-3">{{ $objective->action_plan }}</p>
+                                                <p class="text-sm text-gray-500 mb-3">
+                                                    Hours: {{ $objective->number_of_hours !== null ? $objective->number_of_hours . ' hrs' : 'N/A' }}
+                                                </p>
                                                 
                                                 <div class="flex items-center gap-4">
                                                     <span class="status-badge status-{{ str_replace('_', '-', $objective->status) }}">

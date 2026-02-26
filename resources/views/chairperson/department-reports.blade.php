@@ -163,6 +163,9 @@
                                                                 Created: {{ $objective->created_at->format('M d, Y') }}
                                                             </span>
                                                             <span class="text-xs text-gray-500">
+                                                                Hours: {{ $objective->number_of_hours !== null ? $objective->number_of_hours . ' hrs' : 'N/A' }}
+                                                            </span>
+                                                            <span class="text-xs text-gray-500">
                                                                 Required files: {{ $objective->max_files }}
                                                             </span>
                                                         </div>
@@ -193,7 +196,7 @@
                                                                                 @elseif($file->verification_status === 'approved')
                                                                                     • <span class="text-green-600 font-medium">Approved</span>
                                                                                 @elseif($file->verification_status === 'rejected')
-                                                                                    • <span class="text-red-600 font-medium">Rejected</span>
+                                                                                    • <span class="text-red-600 font-medium">Disapproved</span>
                                                                                 @endif
                                                                             </p>
                                                                         </div>
@@ -215,7 +218,7 @@
                                                                                 <button type="submit" 
                                                                                         class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
                                                                                         onclick="return confirmApprove({{ $file->id }}, '{{ $faculty->name }}', '{{ $file->file_name }}')">
-                                                                                    ✓ Approve
+                                                                                    Approve
                                                                                 </button>
                                                                             </form>
                                                                             <form method="POST" action="{{ route('chairperson.file-verification.reject', $file->id) }}" class="inline">
@@ -223,7 +226,7 @@
                                                                                 <button type="submit" 
                                                                                         class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
                                                                                         onclick="return promptReject({{ $file->id }}, '{{ $faculty->name }}', '{{ $file->file_name }}')">
-                                                                                    ✗ Reject
+                                                                                      Disapprove
                                                                                 </button>
                                                                             </form>
                                                                         @endif

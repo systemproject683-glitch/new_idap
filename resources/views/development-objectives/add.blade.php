@@ -218,59 +218,73 @@
                                     <span class="step-badge">1</span>
                                     <h3 class="step-title">Development Objective/Target</h3>
                                 </div>
-                                <div class="custom-select w-full" data-custom-select="objective">
-                                    <select
-                                        id="objective"
-                                        name="objective"
-                                        class="custom-select-native"
-                                        required
-                                        onchange="updateActionPlan()"
-                                    >
-                                        <option value="">Select Objective</option>
-                                        @php $preSelected = old('objective', request('objective')); @endphp
-                                        @if(count($predefinedObjectives) > 0)
-                                            <optgroup label="Predefined Objectives">
-                                                @foreach($predefinedObjectives as $objective => $actionPlan)
-                                                    <option value="{{ $objective }}" {{ $preSelected === $objective ? 'selected' : '' }}>{{ $objective }}</option>
-                                                @endforeach
-                                            </optgroup>
-                                        @endif
-                                        @if($adminObjectives->count() > 0)
-                                            @foreach($adminObjectives as $objective)
-                                                <option value="{{ $objective->objective }}" {{ $preSelected === $objective->objective ? 'selected' : '' }}>{{ $objective->objective }}</option>
-                                            @endforeach
-                                        @endif
-                                        <option value="Other" {{ $preSelected === 'Other' ? 'selected' : '' }}>Other (Specify your own objective)</option>
-                                    </select>
-                                    <button type="button" class="custom-select-trigger input-field w-full px-4 py-2.5 text-gray-700">
-                                        <span class="custom-select-label">Select Objective</span>
-                                        <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.96a.75.75 0 111.08 1.04l-4.24 4.52a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                    <div class="custom-select-menu">
-                                        @if(count($predefinedObjectives) > 0)
-                                            <div class="custom-select-group">Predefined Objectives</div>
-                                            @foreach($predefinedObjectives as $objective => $actionPlan)
-                                                <button type="button" class="custom-select-option" data-select-value="{{ $objective }}">{{ $objective }}</button>
-                                            @endforeach
-                                        @endif
-                                        @if($adminObjectives->count() > 0)
-                                            @foreach($adminObjectives as $objective)
-                                                <button type="button" class="custom-select-option" data-select-value="{{ $objective->objective }}">{{ $objective->objective }}</button>
-                                            @endforeach
-                                        @endif
-                                        <button type="button" class="custom-select-option" data-select-value="Other">Other (Specify your own objective)</button>
+                                @php
+                                    $preSelected = old('objective', request('objective'));
+                                    $lockedObjective = request()->has('objective');
+                                    $lockedLabel = $preSelected === 'Other'
+                                        ? 'Other (Specify your own objective)'
+                                        : $preSelected;
+                                @endphp
+                                @if($lockedObjective)
+                                    <div class="input-field w-full px-4 py-2.5 text-gray-700 bg-orange-50">
+                                        {{ $lockedLabel }}
                                     </div>
-                                </div>
-                                <p class="step-helper">Choose a development objective that aligns with your goals</p>
+                                    <input type="hidden" id="objective" name="objective" value="{{ $preSelected }}">
+                                
+                                @else
+                                    <div class="custom-select w-full" data-custom-select="objective">
+                                        <select
+                                            id="objective"
+                                            name="objective"
+                                            class="custom-select-native"
+                                            required
+                                            onchange="updateActionPlan()"
+                                        >
+                                            <option value="">Select Objective</option>
+                                            @if(count($predefinedObjectives) > 0)
+                                                <optgroup label="Predefined Objectives">
+                                                    @foreach($predefinedObjectives as $objective => $actionPlan)
+                                                        <option value="{{ $objective }}" {{ $preSelected === $objective ? 'selected' : '' }}>{{ $objective }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endif
+                                            @if($adminObjectives->count() > 0)
+                                                @foreach($adminObjectives as $objective)
+                                                    <option value="{{ $objective->objective }}" {{ $preSelected === $objective->objective ? 'selected' : '' }}>{{ $objective->objective }}</option>
+                                                @endforeach
+                                            @endif
+                                            <option value="Other" {{ $preSelected === 'Other' ? 'selected' : '' }}>Other (Specify your own objective)</option>
+                                        </select>
+                                        <button type="button" class="custom-select-trigger input-field w-full px-4 py-2.5 text-gray-700">
+                                            <span class="custom-select-label">Select Objective</span>
+                                            <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.96a.75.75 0 111.08 1.04l-4.24 4.52a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <div class="custom-select-menu">
+                                            @if(count($predefinedObjectives) > 0)
+                                                <div class="custom-select-group">Predefined Objectives</div>
+                                                @foreach($predefinedObjectives as $objective => $actionPlan)
+                                                    <button type="button" class="custom-select-option" data-select-value="{{ $objective }}">{{ $objective }}</button>
+                                                @endforeach
+                                            @endif
+                                            @if($adminObjectives->count() > 0)
+                                                @foreach($adminObjectives as $objective)
+                                                    <button type="button" class="custom-select-option" data-select-value="{{ $objective->objective }}">{{ $objective->objective }}</button>
+                                                @endforeach
+                                            @endif
+                                            <button type="button" class="custom-select-option" data-select-value="Other">Other (Specify your own objective)</button>
+                                        </div>
+                                    </div>
+                                    <p class="step-helper">Choose a development objective that aligns with your goals</p>
+                                @endif
                                 @error('objective')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Custom Objective Input (Hidden by default) -->
-                            <div id="custom_objective_container" class="mb-5" style="display: none;">
+                            <div id="custom_objective_container" class="mb-5" style="display: {{ $preSelected === 'Other' ? 'block' : 'none' }};">
                                 <label for="custom_objective" class="block text-gray-700 text-sm font-medium mb-2">
                                     Custom Objective
                                 </label>
@@ -280,6 +294,7 @@
                                     name="custom_objective"
                                     class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
                                     placeholder="Enter your custom objective name..."
+                                    {{ $preSelected === 'Other' ? 'required' : '' }}
                                 >
                                 @error('custom_objective')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -306,10 +321,32 @@
                                 @enderror
                             </div>
 
-                            <!-- Budget Requirement -->
+                            <!-- Number of Hours -->
                             <div class="form-step">
                                 <div class="flex items-center gap-3 mb-3">
                                     <span class="step-badge">3</span>
+                                    <h3 class="step-title">Number of Hours</h3>
+                                </div>
+                                <input
+                                    type="number"
+                                    id="number_of_hours"
+                                    name="number_of_hours"
+                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                    placeholder="Enter number of hours..."
+                                    min="0"
+                                    step="1"
+                                    required
+                                >
+                                <p class="step-helper">Enter the estimated hours required for this objective</p>
+                                @error('number_of_hours')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Budget Requirement -->
+                            <div class="form-step">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="step-badge">4</span>
                                     <h3 class="step-title">Budget Requirement</h3>
                                 </div>
                                 <input
@@ -330,7 +367,7 @@
                             <!-- Target Period -->
                             <div class="form-step">
                                 <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">4</span>
+                                    <span class="step-badge">5</span>
                                     <h3 class="step-title">Target Period</h3>
                                 </div>
                                 <div class="custom-select w-full" data-custom-select="target_period">
@@ -367,7 +404,7 @@
                             <!-- Support Required -->
                             <div class="form-step">
                                 <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">5</span>
+                                    <span class="step-badge">6</span>
                                     <h3 class="step-title">Support Required</h3>
                                 </div>
                                 <input
@@ -386,7 +423,7 @@
                             <!-- File Count Selection -->
                             <div class="form-step">
                                 <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">6</span>
+                                    <span class="step-badge">7</span>
                                     <h3 class="step-title">Number of Files to Upload</h3>
                                 </div>
                                 <div class="custom-select w-full" data-custom-select="max_files">
@@ -551,6 +588,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (opt && opt.textContent.trim()) lbl.textContent = opt.textContent.trim();
                 }
             });
+
+            if (preSelected === 'Other') {
+                sel.dispatchEvent(new Event('change'));
+            }
         }
     }
 });

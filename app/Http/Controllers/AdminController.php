@@ -143,6 +143,7 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'department' => 'required|string|in:DAFE,DCEA,DCEEE,DIET,DIT',
             'role' => 'required|string|in:faculty,chairperson',
+            'academic_rank' => 'nullable|string|max:255',
             'regularized_at' => 'nullable|date',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -167,6 +168,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'department' => $request->department,
             'role' => $request->role,
+            'academic_rank' => $request->academic_rank,
             'regularized_at' => $request->input('regularized_at') ?: null,
             'password' => Hash::make($request->password),
         ]);
@@ -188,6 +190,7 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'department' => 'required|string|in:DAFE,DCEA,DCEEE,DIET,DIT',
             'role' => 'required|string|in:faculty,chairperson',
+            'academic_rank' => 'nullable|string|max:255',
             'regularized_at' => 'nullable|date',
         ]);
 
@@ -212,6 +215,7 @@ class AdminController extends Controller
             'email' => $request->email,
             'department' => $request->department,
             'role' => $request->role,
+            'academic_rank' => $request->academic_rank,
             'regularized_at' => $request->input('regularized_at') ?: null,
         ]);
 

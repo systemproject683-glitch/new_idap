@@ -6,7 +6,7 @@
     <div class="p-4 h-full flex flex-col" style="background-color: rgba(255, 107, 53, 0.35);">
         <div class="text-center mb-6">
             <h1 class="text-3xl font-bold text-white">CEIT</h1>
-            <p class="text-sm text-white">Individual Development and Action Plan System</p>
+            <p class="text-sm text-white">Learning Development Plan</p>
         </div>
         
         <nav class="space-y-2 flex-1 text-[14px]">

@@ -223,7 +223,7 @@
                                             <td class="py-4 px-4">
                                                 <div class="action-links flex gap-2 text-sm">
                                                     <button 
-                                                        onclick="openEditModal({{ $user->id }}, '{{ $user->first_name }}', '{{ $user->middle_name }}', '{{ $user->last_name }}', '{{ $user->email }}', '{{ $user->department }}', '{{ $user->role }}', '{{ optional($user->regularized_at)->format('Y-m-d') }}')" 
+                                                        onclick="openEditModal({{ $user->id }}, '{{ $user->first_name }}', '{{ $user->middle_name }}', '{{ $user->last_name }}', '{{ $user->email }}', '{{ $user->department }}', '{{ $user->role }}', '{{ $user->academic_rank }}', '{{ optional($user->regularized_at)->format('Y-m-d') }}')" 
                                                         class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer bg-transparent border-0 p-0"
                                                     >
                                                         Edit
@@ -355,21 +355,48 @@
                         </select>
                     </div>
                     
-                    <!-- Role Field -->
-                    <div class="mb-6">
-                        <label for="edit_role" class="block text-gray-700 text-sm font-medium mb-2">
-                            Role
-                        </label>
-                        <select 
-                            id="edit_role" 
-                            name="role" 
-                            class="input-field w-full px-4 py-3 text-gray-700"
-                            required
-                        >
-                            <option value="">Select Role</option>
-                            <option value="faculty">Faculty Member</option>
-                            <option value="chairperson">Chairperson</option>
-                        </select>
+                    <!-- Role and Academic Rank Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <!-- Role Field -->
+                        <div>
+                            <label for="edit_role" class="block text-gray-700 text-sm font-medium mb-2">
+                                Role
+                            </label>
+                            <select 
+                                id="edit_role" 
+                                name="role" 
+                                class="input-field w-full px-4 py-3 text-gray-700"
+                                required
+                            >
+                                <option value="">Select Role</option>
+                                <option value="faculty">Faculty Member</option>
+                                <option value="chairperson">Chairperson</option>
+                            </select>
+                        </div>
+
+                        <!-- Academic Rank Field -->
+                        <div>
+                            <label for="edit_academic_rank" class="block text-gray-700 text-sm font-medium mb-2">
+                                Academic Rank
+                            </label>
+                            <select 
+                                id="edit_academic_rank" 
+                                name="academic_rank" 
+                                class="input-field w-full px-4 py-3 text-gray-700"
+                                style="display: none;"
+                            >
+                                <option value="">Select Academic Rank</option>
+                                <option value="University Professor">University Professor</option>
+                                <option value="Instructor 1">Instructor 1</option>
+                            </select>
+                            <input 
+                                type="text" 
+                                id="edit_academic_rank_text" 
+                                name="academic_rank" 
+                                class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
+                                placeholder="e.g., Professor, Associate Professor"
+                            >
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -433,7 +460,7 @@
         let currentEditingUserDept = null;
         let currentEditingUserRole = null;
 
-        function openEditModal(userId, firstName, middleName, lastName, email, department, role, regularizedAt) {
+        function openEditModal(userId, firstName, middleName, lastName, email, department, role, academicRank, regularizedAt) {
             // Store current editing user info
             currentEditingUserId = userId;
             currentEditingUserDept = department;
@@ -449,6 +476,16 @@
             document.getElementById('edit_email').value = email;
             document.getElementById('edit_department').value = department;
             document.getElementById('edit_role').value = role;
+            
+            // Set academic rank based on role
+            if (role === 'faculty' && (academicRank === 'University Professor' || academicRank === 'Instructor 1')) {
+                document.getElementById('edit_academic_rank').value = academicRank || '';
+                document.getElementById('edit_academic_rank_text').value = '';
+            } else {
+                document.getElementById('edit_academic_rank').value = '';
+                document.getElementById('edit_academic_rank_text').value = academicRank || '';
+            }
+            
             document.getElementById('edit_regularized_at').value = regularizedAt || '';
             
             // Clear password fields
@@ -457,6 +494,9 @@
             
             // Update role options based on department
             updateModalRoleOptions();
+            
+            // Update academic rank field
+            updateModalAcademicRankField();
             
             // Show modal
             document.getElementById('editModal').classList.add('show');
@@ -492,7 +532,39 @@
                 chairpersonOption.disabled = false;
                 chairpersonOption.textContent = 'Chairperson';
             }
+            
+            // Update academic rank field when role changes
+            updateModalAcademicRankField();
         }
+        
+        function updateModalAcademicRankField() {
+            const roleSelect = document.getElementById('edit_role');
+            const academicRankSelect = document.getElementById('edit_academic_rank');
+            const academicRankText = document.getElementById('edit_academic_rank_text');
+            
+            if (roleSelect.value === 'faculty') {
+                // Show dropdown for faculty
+                academicRankSelect.style.display = 'block';
+                academicRankSelect.removeAttribute('disabled');
+                academicRankSelect.name = 'academic_rank';
+                academicRankText.style.display = 'none';
+                academicRankText.setAttribute('disabled', 'disabled');
+                academicRankText.name = 'academic_rank_text';
+            } else {
+                // Show text input for chairperson or when no role selected
+                academicRankSelect.style.display = 'none';
+                academicRankSelect.setAttribute('disabled', 'disabled');
+                academicRankSelect.name = 'academic_rank_disabled';
+                academicRankText.style.display = 'block';
+                academicRankText.removeAttribute('disabled');
+                academicRankText.name = 'academic_rank';
+            }
+        }
+
+        // Add event listener for role change in edit modal
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('edit_role').addEventListener('change', updateModalAcademicRankField);
+        });
 
         // Close modal when clicking outside of it
         window.onclick = function(event) {

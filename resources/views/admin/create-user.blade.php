@@ -240,29 +240,59 @@
                                 @enderror
                             </div>
                             
-                            <!-- Role Field -->
-                            <!-- Role Field -->
-                            <div>
-                                <label for="role" class="block text-gray-700 text-sm font-medium mb-2">
-                                    Role
-                                </label>
-                                <select 
-                                    id="role" 
-                                    name="role" 
-                                    class="input-field w-full px-4 py-2.5 text-gray-700"
-                                    required
-                                >
-                                    <option value="">Select Role</option>
-                                    <option value="faculty" {{ old('role') == 'faculty' ? 'selected' : '' }}>
-                                        Faculty Member
-                                    </option>
-                                    <option value="chairperson" {{ old('role') == 'chairperson' ? 'selected' : '' }}>
-                                        Chairperson
-                                    </option>
-                                </select>
-                                @error('role')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                            <!-- Role and Academic Rank Fields -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Role Field -->
+                                <div>
+                                    <label for="role" class="block text-gray-700 text-sm font-medium mb-2">
+                                        Role
+                                    </label>
+                                    <select 
+                                        id="role" 
+                                        name="role" 
+                                        class="input-field w-full px-4 py-2.5 text-gray-700"
+                                        required
+                                    >
+                                        <option value="">Select Role</option>
+                                        <option value="faculty" {{ old('role') == 'faculty' ? 'selected' : '' }}>
+                                            Faculty Member
+                                        </option>
+                                        <option value="chairperson" {{ old('role') == 'chairperson' ? 'selected' : '' }}>
+                                            Chairperson
+                                        </option>
+                                    </select>
+                                    @error('role')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Academic Rank Field -->
+                                <div>
+                                    <label for="academic_rank" class="block text-gray-700 text-sm font-medium mb-2">
+                                        Academic Rank
+                                    </label>
+                                    <select 
+                                        id="academic_rank" 
+                                        name="academic_rank" 
+                                        class="input-field w-full px-4 py-2.5 text-gray-700"
+                                        style="display: none;"
+                                    >
+                                        <option value="">Select Academic Rank</option>
+                                        <option value="University Professor" {{ old('academic_rank') == 'University Professor' ? 'selected' : '' }}>University Professor</option>
+                                        <option value="Instructor 1" {{ old('academic_rank') == 'Instructor 1' ? 'selected' : '' }}>Instructor 1</option>
+                                    </select>
+                                    <input 
+                                        type="text" 
+                                        id="academic_rank_text" 
+                                        name="academic_rank" 
+                                        class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                        placeholder="e.g., Professor, Associate Professor"
+                                        value="{{ old('academic_rank') }}"
+                                    >
+                                    @error('academic_rank')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <div class="mt-4">
@@ -367,8 +397,36 @@ function updateRoleOptions() {
     }
 }
 
+function updateAcademicRankField() {
+    const roleSelect = document.getElementById('role');
+    const academicRankSelect = document.getElementById('academic_rank');
+    const academicRankText = document.getElementById('academic_rank_text');
+    
+    if (roleSelect.value === 'faculty') {
+        // Show dropdown for faculty
+        academicRankSelect.style.display = 'block';
+        academicRankSelect.removeAttribute('disabled');
+        academicRankSelect.name = 'academic_rank';
+        academicRankText.style.display = 'none';
+        academicRankText.setAttribute('disabled', 'disabled');
+        academicRankText.name = 'academic_rank_text';
+    } else {
+        // Show text input for chairperson or when no role selected
+        academicRankSelect.style.display = 'none';
+        academicRankSelect.setAttribute('disabled', 'disabled');
+        academicRankSelect.name = 'academic_rank_disabled';
+        academicRankText.style.display = 'block';
+        academicRankText.removeAttribute('disabled');
+        academicRankText.name = 'academic_rank';
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateRoleOptions();
+    updateAcademicRankField();
+    
+    // Add event listener for role changes
+    document.getElementById('role').addEventListener('change', updateAcademicRankField);
 });
 </script>

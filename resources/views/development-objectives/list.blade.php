@@ -293,6 +293,9 @@
                                                     <span class="text-sm text-gray-500">
                                                         Created: {{ $objective->created_at->format('M d, Y') }}
                                                     </span>
+                                                    <span class="text-sm text-gray-500">
+                                                        Hours: {{ $objective->number_of_hours !== null ? $objective->number_of_hours . ' hrs' : 'N/A' }}
+                                                    </span>
                                                 </div>
 
                                                 <!-- File Upload Section -->
@@ -349,7 +352,6 @@
 
                                                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
                                                         <form method="POST" action="{{ route('development-objectives.upload-file', $objective->id) }}"
-                                                              data-upload-form
                                                               enctype="multipart/form-data" class="space-y-3 lg:col-span-2">
                                                             @csrf
                                                             <div class="flex flex-col gap-3">
@@ -380,7 +382,7 @@
                                                                     @else
                                                                         <span></span>
                                                                     @endif
-                                                                    <button type="submit" class="btn-primary text-white px-4 py-2 rounded text-sm" data-upload-submit
+                                                                    <button type="submit" class="btn-primary text-white px-4 py-2 rounded text-sm"
                                                                             @if($objective->max_files > 0 && $objective->files->count() >= $objective->max_files) disabled @endif>
                                                                         Upload
                                                                     </button>
@@ -461,7 +463,7 @@
                                                                                 @elseif($file->verification_status === 'approved')
                                                                                     <span class="file-badge">Approved</span>
                                                                                 @elseif($file->verification_status === 'rejected')
-                                                                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Rejected</span>
+                                                                                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Disapproved</span>
                                                                                 @endif
 
                                                                                 @if($file->verification_status !== 'approved')
@@ -509,7 +511,7 @@
                                         </svg>
                                         <h2 class="text-lg font-semibold text-orange-600">Objectives Summary</h2>
                                     </div>
-                                    <button id="openIdapModal" type="button" class="btn-primary text-white px-3 py-1.5 rounded text-sm hover:bg-orange-600 transition">
+                                    <button id="openIdapModal" class="btn-primary text-white px-3 py-1.5 rounded text-sm hover:bg-orange-600 transition">
                                         View IDAP
                                     </button>
                                 </div>
@@ -691,7 +693,7 @@
                                         @endphp
                                         <div style="flex: 0 0 48%;">
                                             <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Position:</span>
-                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 200px); text-align: left; color: #333; padding: 1px 0; ">{{ auth()->user()->role ?? 'N/A' }}</span>
+                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 200px); text-align: left; color: #333; padding: 1px 0; ">{{ ucfirst(auth()->user()->role ?? 'N/A') }}@if(auth()->user()->academic_rank) - {{ auth()->user()->academic_rank }}@endif</span>
                                         </div>
                                         <div style="flex: 0 0 48%;">
                                             <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Years in Position:</span>
@@ -1080,30 +1082,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const uploadForms = document.querySelectorAll('form[data-upload-form]');
-
-    uploadForms.forEach((form) => {
-        const fileInput = form.querySelector('input[type="file"][name="file"]');
-        const uploadSubmit = form.querySelector('button[data-upload-submit]');
-
-        if (!fileInput || !uploadSubmit) {
-            return;
-        }
-
-        uploadSubmit.addEventListener('click', (event) => {
-            if (uploadSubmit.disabled) {
-                return;
-            }
-
-            if (!fileInput.files || fileInput.files.length === 0) {
-                event.preventDefault();
-                fileInput.click();
-            }
-        });
-    });
-});
-
 // IDAP Modal functionality
 document.addEventListener('DOMContentLoaded', () => {
     const idapModal = document.getElementById('idapModal');
@@ -1116,8 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!idapModal || !openIdapModal) return;
 
     // Open modal
-    openIdapModal.addEventListener('click', (event) => {
-        event.preventDefault();
+    openIdapModal.addEventListener('click', () => {
         idapModal.classList.remove('hidden');
     });
 
@@ -1140,12 +1117,8 @@ document.addEventListener('DOMContentLoaded', () => {
         idapModal.classList.add('hidden');
     };
 
-    if (closeIdapModal) {
-        closeIdapModal.addEventListener('click', closeModal);
-    }
-    if (closeIdapModal2) {
-        closeIdapModal2.addEventListener('click', closeModal);
-    }
+    closeIdapModal.addEventListener('click', closeModal);
+    closeIdapModal2.addEventListener('click', closeModal);
 
     // Close modal when clicking outside
     idapModal.addEventListener('click', (event) => {
@@ -1155,10 +1128,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Print functionality - open new window with document content and all styles
-    if (!printIdapButton) {
-        return;
-    }
-
     printIdapButton.addEventListener('click', () => {
         const documentContent = document.getElementById('idapDocument').innerHTML;
         const printWindow = window.open('', '_blank', 'width=1100,height=800');

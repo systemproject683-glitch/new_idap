@@ -564,6 +564,24 @@
                                 </div>
                             </button>
 
+                            <!-- ── OTHER (PLEASE SPECIFY) ── -->
+                            <button type="button"
+                                onclick="window.location='{{ route('development-objectives.add') }}?objective=' + encodeURIComponent('Other')"
+                                class="card p-6 border-l-4 border-orange-400 text-left hover:shadow-lg hover:scale-105 transform transition group focus:outline-none focus:ring-2 focus:ring-orange-400">
+                                <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
+                                    <!-- Pencil icon -->
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                    </svg>
+                                </div>
+                                <div class="font-bold text-gray-800 text-sm">Other (Please Specify)</div>
+                                <p class="text-gray-500 text-xs mt-1">Enter a custom development objective</p>
+                                <div class="mt-3 flex items-center gap-1 text-orange-500 text-xs font-semibold opacity-0 group-hover:opacity-100 transition">
+                                    Enter
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </div>
+                            </button>
+
                             <!-- ── Placeholder cards for future targets ── -->
                             <!-- You can copy the pattern above for targets without sub-objectives -->
                             <!-- Example of a single-target card (no modal): -->

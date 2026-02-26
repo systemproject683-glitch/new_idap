@@ -181,6 +181,9 @@
                                                     <span class="text-sm text-gray-500">
                                                         Created: {{ $objective->created_at->format('M d, Y') }}
                                                     </span>
+                                                    <span class="text-sm text-gray-500">
+                                                        Hours: {{ $objective->number_of_hours !== null ? $objective->number_of_hours . ' hrs' : 'N/A' }}
+                                                    </span>
                                                 </div>
 
                                                 @if($objective->max_files > 0)

@@ -14,6 +14,7 @@ class DevelopmentObjective extends Model
         'user_id',
         'objective',
         'action_plan',
+        'number_of_hours',
         'budget_requirement',
         'target_period',
         'support_required',
