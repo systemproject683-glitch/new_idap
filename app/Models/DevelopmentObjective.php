@@ -13,22 +13,39 @@ class DevelopmentObjective extends Model
     protected $fillable = [
         'user_id',
         'objective',
+        'title',
         'action_plan',
         'number_of_hours',
         'budget_requirement',
         'target_period',
+        'target_date_from',
+        'target_date_to',
         'support_required',
         'status',
         'is_admin_created',
         'file_path',
         'file_name',
         'max_files',
+        'lnd_type',
+        'lnd_title',
+        'lnd_period_date',
+        'lnd_hours',
+        'lnd_proof_completion',
     ];
 
     protected $casts = [
         'status' => 'string',
         'is_admin_created' => 'boolean',
     ];
+
+    protected static function booting(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (static::max('id') ?? 0) + 1;
+            }
+        });
+    }
 
     /**
      * Get the user that owns the development objective.

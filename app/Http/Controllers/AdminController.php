@@ -123,10 +123,58 @@ class AdminController extends Controller
         ));
     }
 
-    public function userManagement()
+    public function recentActivities(Request $request)
     {
-        $users = User::paginate(10);
-        return view('admin.user-management', compact('users'));
+        $departments = ['DAFE', 'DCEA', 'DCEEE', 'DIET', 'DIT'];
+        $selectedDepartment = $request->query('department');
+
+        $query = DevelopmentObjective::with('user')
+            ->where('created_at', '>=', now()->subMonth());
+
+        if ($selectedDepartment && in_array($selectedDepartment, $departments)) {
+            $query->whereHas('user', function ($q) use ($selectedDepartment) {
+                $q->where('department', $selectedDepartment);
+            });
+        }
+
+        $activities = $query->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($objective) {
+                return [
+                    'user'            => $objective->user
+                                            ? $objective->user->first_name . ' ' . $objective->user->last_name
+                                            : 'Admin',
+                    'department'      => $objective->user->department ?? '—',
+                    'action'          => 'created a new development objective',
+                    'objective_title' => $objective->title ?? $objective->objective ?? '',
+                    'time'            => $objective->created_at,
+                ];
+            });
+
+        return view('admin.recent-activities', compact('activities', 'departments', 'selectedDepartment'));
+    }
+
+    public function userManagement(Request $request)
+    {
+        $departments = ['DAFE', 'DCEA', 'DCEEE', 'DIET', 'DIT'];
+        $roles = ['faculty' => 'Faculty Member', 'chairperson' => 'Chairperson'];
+
+        $selectedDepartment = $request->query('department');
+        $selectedRole       = $request->query('role');
+
+        $query = User::query();
+
+        if ($selectedDepartment && in_array($selectedDepartment, $departments)) {
+            $query->where('department', $selectedDepartment);
+        }
+
+        if ($selectedRole && array_key_exists($selectedRole, $roles)) {
+            $query->where('role', $selectedRole);
+        }
+
+        $users = $query->paginate(10)->withQueryString();
+
+        return view('admin.user-management', compact('users', 'departments', 'roles', 'selectedDepartment', 'selectedRole'));
     }
 
     public function createUser()
@@ -173,7 +221,7 @@ class AdminController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->back()
             ->with('success', 'User created successfully.');
     }
 

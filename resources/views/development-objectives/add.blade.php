@@ -4,176 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Add Objective - IDAP System</title>
+    <title>Add Objective - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #fff7ed;
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-bar {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 10px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        :root {
-            --page-header-height: 84px;
-            --page-header-gap: 16px;
-        }
-
-        .page-header-fixed {
-            position: fixed;
-            top: 0;
-            left: 256px;
-            right: 0;
-            z-index: 20;
-            margin: 0;
-            height: var(--page-header-height);
-        }
-
-        .page-content {
-            padding-top: 0;
-        }
-
-        .page-header-spacer {
-            height: calc(var(--page-header-height) + var(--page-header-gap));
-        }
-
-        .alert-popup {
-            position: fixed;
-            top: calc(var(--page-header-height) + var(--page-header-gap));
-            right: 24px;
-            z-index: 50;
-            max-width: 420px;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        .alert-hidden {
-            opacity: 0;
-            transform: translateY(-8px);
-            pointer-events: none;
-        }
-
-        .btn-primary {
-            background-color: #ff6b35;
-        }
-        .btn-primary:hover {
-            background-color: #e55a2b;
-        }
-        .input-field {
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            background-color: #ffedd5;
-        }
-        .input-field:focus {
-            border-color: #ff6b35;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
-        .custom-select {
-            position: relative;
-        }
-        .custom-select-native {
-            position: absolute;
-            inset: 0;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .custom-select-trigger {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            background-color: #ffedd5;
-            text-align: left;
-            cursor: pointer;
-        }
-        .custom-select-menu {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: calc(100% + 4px);
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
-            padding: 6px 0;
-            z-index: 30;
-            max-height: 240px;
-            overflow-y: auto;
-            display: none;
-        }
-        .custom-select.open .custom-select-menu {
-            display: block;
-        }
-        .custom-select-option {
-            display: block;
-            width: 100%;
-            padding: 8px 16px;
-            font-size: 0.95rem;
-            color: #1f2937;
-            text-align: left;
-            background: transparent;
-            cursor: pointer;
-        }
-        .custom-select-option:hover,
-        .custom-select-option:focus {
-            background-color: #fed7aa;
-            color: #7c2d12;
-            outline: none;
-        }
-        .custom-select-group {
-            padding: 6px 16px 4px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #6b7280;
-        }
-
-        .form-step {
-            padding: 8px 0 20px;
-        }
-
-        .form-step + .form-step {
-            border-top: 1px solid #e5e7eb;
-            padding-top: 20px;
-        }
-
-        .step-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            background-color: #ff6b35;
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .step-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .step-helper {
-            margin-top: 8px;
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/development-objectives-add.css') }}">
 </head>
 <body class="min-h-screen">
     <div class="flex">
@@ -185,10 +18,23 @@
             <div class="p-8 page-content">
                 <!-- Header -->
                 <div class="header-bar page-header-fixed">
-                    <h1 class="text-2xl font-bold text-gray-800 mt-0">Add Objective</h1>
-                    <p class="text-gray-600 mt-1 mb-0 leading-tight">Define your development goals and create an action plan</p>
+                    <div class="flex items-center justify-between h-full min-h-16">
+                        <div>
+                            <p class="text-gray-600 text-base">CEIT / <span class="text-orange-600 font-semibold">Add Objective</span></p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                            <span class="text-gray-300 text-base">|</span>
+                            <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="page-header-spacer"></div>
+
+
 
                 @if(session('success') || session('error'))
                     <div class="alert-popup" id="alert-popup">
@@ -205,19 +51,29 @@
                     </div>
                 @endif
 
-                <div class="card max-w-3xl mx-auto">
-                    <div class="p-6 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-800">Add New Objective</h2>
+                <div class="bg-white rounded-2xl shadow-2xl max-w-2xl mx-auto overflow-hidden">
+                    <!-- Modal-style header -->
+                    <div class="flex items-center gap-3 px-8 pt-8 pb-6 border-b border-gray-100">
+                        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600 flex-shrink-0">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m7-7H5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-800">Add New Objective</h2>
+                            <p class="text-xs text-gray-500 mt-0.5">Fill in the details to create a development goal</p>
+                        </div>
                     </div>
-                    <div class="p-6">
+                    <div class="px-8 py-6 space-y-4">
                         <form method="POST" action="{{ route('development-objectives.store') }}">
                             @csrf
                             <!-- Objective Dropdown -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">1</span>
-                                    <h3 class="step-title">Development Objective/Target</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-visible relative z-10">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">1</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Development Objective/Target</h3>
                                 </div>
+                                <div class="px-5 py-4">
                                 @php
                                     $preSelected = old('objective', request('objective'));
                                     $lockedObjective = request()->has('objective');
@@ -281,95 +137,132 @@
                                 @error('objective')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
+                                </div>
                             </div>
 
                             <!-- Custom Objective Input (Hidden by default) -->
-                            <div id="custom_objective_container" class="mb-5" style="display: {{ $preSelected === 'Other' ? 'block' : 'none' }};">
-                                <label for="custom_objective" class="block text-gray-700 text-sm font-medium mb-2">
-                                    Custom Objective
-                                </label>
-                                <input
-                                    type="text"
-                                    id="custom_objective"
-                                    name="custom_objective"
-                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
-                                    placeholder="Enter your custom objective name..."
-                                    {{ $preSelected === 'Other' ? 'required' : '' }}
-                                >
-                                @error('custom_objective')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                            <div id="custom_objective_container" class="rounded-xl border border-orange-100 shadow-sm overflow-hidden" style="display: {{ $preSelected === 'Other' ? 'block' : 'none' }};">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-orange-50 border-b border-orange-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-100 flex items-center justify-center text-orange-500 flex-shrink-0">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                    </span>
+                                    <label for="custom_objective" class="font-semibold text-gray-800 text-sm">Custom Objective</label>
+                                </div>
+                                <div class="px-5 py-4">
+                                    <input
+                                        type="text"
+                                        id="custom_objective"
+                                        name="custom_objective"
+                                        class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                        placeholder="Enter your custom objective name..."
+                                        {{ $preSelected === 'Other' ? 'required' : '' }}
+                                    >
+                                    @error('custom_objective')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
+                           
+
                             <!-- Action Plan -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">2</span>
-                                    <h3 class="step-title">Action Plan</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">2</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Action Plan</h3>
                                 </div>
-                                <textarea
-                                    id="action_plan"
-                                    name="action_plan"
-                                    class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
-                                    rows="3"
-                                    placeholder="Describe your action plan..."
-                                    required
-                                ></textarea>
-                                <p class="step-helper">Provide a comprehensive description of your action plan</p>
-                                @error('action_plan')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                <div class="px-5 py-4">
+                                    <textarea
+                                        id="action_plan"
+                                        name="action_plan"
+                                        class="input-field w-full px-4 py-3 text-gray-700 placeholder-gray-400"
+                                        rows="3"
+                                        placeholder="Describe your action plan..."
+                                        required
+                                    ></textarea>
+                                    <p class="text-xs text-gray-400 mt-1">Provide a comprehensive description of your action plan</p>
+                                    @error('action_plan')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                             <!-- Title of Activity Attended -->
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">3</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Title of Activity Attended</h3>
+                                </div>
+                                <div class="px-5 py-4">
+                                    <input
+                                        type="text"
+                                        id="title"
+                                        name="title"
+                                        class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                        placeholder="Enter the title of the activity or event you attended..."
+                                        required
+                                    >
+                                    <p class="text-xs text-gray-400 mt-1">Specify the name or title of the workshop, seminar, training, or activity</p>
+                                    @error('title')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Number of Hours -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">3</span>
-                                    <h3 class="step-title">Number of Hours</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">4</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Number of Hours</h3>
                                 </div>
-                                <input
-                                    type="number"
-                                    id="number_of_hours"
-                                    name="number_of_hours"
-                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
-                                    placeholder="Enter number of hours..."
-                                    min="0"
-                                    step="1"
-                                    required
-                                >
-                                <p class="step-helper">Enter the estimated hours required for this objective</p>
-                                @error('number_of_hours')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                <div class="px-5 py-4">
+                                    <input
+                                        type="number"
+                                        id="number_of_hours"
+                                        name="number_of_hours"
+                                        class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                        placeholder="Enter number of hours..."
+                                        min="0"
+                                        step="1"
+                                        required
+                                    >
+                                    <p class="text-xs text-gray-400 mt-1">Enter the estimated hours required for this objective</p>
+                                    @error('number_of_hours')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Budget Requirement -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">4</span>
-                                    <h3 class="step-title">Budget Requirement</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">5</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Budget Requirement</h3>
                                 </div>
-                                <input
-                                    type="number"
-                                    id="budget_requirement"
-                                    name="budget_requirement"
-                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
-                                    placeholder="Enter budget requirement..."
-                                    min="0"
-                                    step="0.01"
-                                >
-                                <p class="step-helper">Enter the estimated budget required for this objective</p>
-                                @error('budget_requirement')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                <div class="px-5 py-4">
+                                    <input
+                                        type="number"
+                                        id="budget_requirement"
+                                        name="budget_requirement"
+                                        class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                        placeholder="Enter budget requirement..."
+                                        min="0"
+                                        step="0.01"
+                                    >
+                                    <p class="text-xs text-gray-400 mt-1">Enter the estimated budget required for this objective</p>
+                                    @error('budget_requirement')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Target Period -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">5</span>
-                                    <h3 class="step-title">Target Period</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-visible relative" data-section-card>
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">6</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Target Period</h3>
                                 </div>
+                                <div class="px-5 py-4">
                                 <div class="custom-select w-full" data-custom-select="target_period">
                                     <select
                                         id="target_period"
@@ -395,38 +288,141 @@
                                         <button type="button" class="custom-select-option" data-select-value="Q4">Q4</button>
                                     </div>
                                 </div>
-                                <p class="step-helper">Select the quarter when you plan to complete this objective</p>
-                                @error('target_period')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                    <p class="text-xs text-gray-400 mt-1">Select the quarter when you plan to complete this objective</p>
+                                    @error('target_period')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Target Date From and To -->
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-visible relative" data-section-card>
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">7</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Target Dates (Month)</h3>
+                                </div>
+                                <div class="px-5 py-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="target_date_from" class="block text-sm font-medium text-gray-700 mb-2">From (Month)</label>
+                                        <div class="custom-select custom-select-white w-full" data-custom-select="target_date_from">
+                                            <select id="target_date_from" name="target_date_from" class="custom-select-native">
+                                                <option value="" selected disabled hidden>Select month</option>
+                                                <option value="January">January</option>
+                                                <option value="February">February</option>
+                                                <option value="March">March</option>
+                                                <option value="April">April</option>
+                                                <option value="May">May</option>
+                                                <option value="June">June</option>
+                                                <option value="July">July</option>
+                                                <option value="August">August</option>
+                                                <option value="September">September</option>
+                                                <option value="October">October</option>
+                                                <option value="November">November</option>
+                                                <option value="December">December</option>
+                                            </select>
+                                            <button type="button" class="custom-select-trigger input-field w-full px-4 py-2.5 text-gray-700">
+                                                <span class="custom-select-label">Select month</span>
+                                                <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.96a.75.75 0 111.08 1.04l-4.24 4.52a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            <div class="custom-select-menu">
+                                                <button type="button" class="custom-select-option" data-select-value="January">January</button>
+                                                <button type="button" class="custom-select-option" data-select-value="February">February</button>
+                                                <button type="button" class="custom-select-option" data-select-value="March">March</button>
+                                                <button type="button" class="custom-select-option" data-select-value="April">April</button>
+                                                <button type="button" class="custom-select-option" data-select-value="May">May</button>
+                                                <button type="button" class="custom-select-option" data-select-value="June">June</button>
+                                                <button type="button" class="custom-select-option" data-select-value="July">July</button>
+                                                <button type="button" class="custom-select-option" data-select-value="August">August</button>
+                                                <button type="button" class="custom-select-option" data-select-value="September">September</button>
+                                                <button type="button" class="custom-select-option" data-select-value="October">October</button>
+                                                <button type="button" class="custom-select-option" data-select-value="November">November</button>
+                                                <button type="button" class="custom-select-option" data-select-value="December">December</button>
+                                            </div>
+                                        </div>
+                                        @error('target_date_from')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <label for="target_date_to" class="block text-sm font-medium text-gray-700 mb-2">To (Month)</label>
+                                        <div class="custom-select custom-select-white w-full" data-custom-select="target_date_to">
+                                            <select id="target_date_to" name="target_date_to" class="custom-select-native">
+                                                <option value="" selected disabled hidden>Select month</option>
+                                                <option value="January">January</option>
+                                                <option value="February">February</option>
+                                                <option value="March">March</option>
+                                                <option value="April">April</option>
+                                                <option value="May">May</option>
+                                                <option value="June">June</option>
+                                                <option value="July">July</option>
+                                                <option value="August">August</option>
+                                                <option value="September">September</option>
+                                                <option value="October">October</option>
+                                                <option value="November">November</option>
+                                                <option value="December">December</option>
+                                            </select>
+                                            <button type="button" class="custom-select-trigger input-field w-full px-4 py-2.5 text-gray-700">
+                                                <span class="custom-select-label">Select month</span>
+                                                <svg class="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.188l3.71-3.96a.75.75 0 111.08 1.04l-4.24 4.52a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                                </svg>
+                                            </button>
+                                            <div class="custom-select-menu">
+                                                <button type="button" class="custom-select-option" data-select-value="January">January</button>
+                                                <button type="button" class="custom-select-option" data-select-value="February">February</button>
+                                                <button type="button" class="custom-select-option" data-select-value="March">March</button>
+                                                <button type="button" class="custom-select-option" data-select-value="April">April</button>
+                                                <button type="button" class="custom-select-option" data-select-value="May">May</button>
+                                                <button type="button" class="custom-select-option" data-select-value="June">June</button>
+                                                <button type="button" class="custom-select-option" data-select-value="July">July</button>
+                                                <button type="button" class="custom-select-option" data-select-value="August">August</button>
+                                                <button type="button" class="custom-select-option" data-select-value="September">September</button>
+                                                <button type="button" class="custom-select-option" data-select-value="October">October</button>
+                                                <button type="button" class="custom-select-option" data-select-value="November">November</button>
+                                                <button type="button" class="custom-select-option" data-select-value="December">December</button>
+                                            </div>
+                                        </div>
+                                        @error('target_date_to')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                    <p class="text-xs text-gray-400 mt-1">Specify the month range for target completion (optional)</p>
+                                </div>
                             </div>
 
                             <!-- Support Required -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">6</span>
-                                    <h3 class="step-title">Support Required</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">8</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Support Required</h3>
                                 </div>
-                                <input
-                                    type="text"
-                                    id="support_required"
-                                    name="support_required"
-                                    class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
-                                    placeholder="Enter support required..."
-                                >
-                                <p class="step-helper">Describe any support or resources needed to achieve this objective</p>
-                                @error('support_required')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                <div class="px-5 py-4">
+                                    <input
+                                        type="text"
+                                        id="support_required"
+                                        name="support_required"
+                                        class="input-field w-full px-4 py-2.5 text-gray-700 placeholder-gray-400"
+                                        placeholder="Enter support required..."
+                                    >
+                                    <p class="text-xs text-gray-400 mt-1">Describe any support or resources needed to achieve this objective</p>
+                                    @error('support_required')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- File Count Selection -->
-                            <div class="form-step">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="step-badge">7</span>
-                                    <h3 class="step-title">Number of Files to Upload</h3>
+                            <div class="rounded-xl border border-gray-100 shadow-sm overflow-visible relative" data-section-card>
+                                <div class="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                                    <span class="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold text-xs flex-shrink-0">9</span>
+                                    <h3 class="font-semibold text-gray-800 text-sm">Number of Files to Upload</h3>
                                 </div>
-                                <div class="custom-select w-full" data-custom-select="max_files">
+                                <div class="px-5 py-4">
+                                <div class="custom-select custom-select-dropup w-full" data-custom-select="max_files" data-dropup="true">
                                     <select
                                         id="max_files"
                                         name="max_files"
@@ -450,24 +446,35 @@
                                         <button type="button" class="custom-select-option" data-select-value="3">3 Files</button>
                                     </div>
                                 </div>
-                                <p class="step-helper">Select how many files you plan to upload for this objective</p>
-                                @error('max_files')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                    <p class="text-xs text-gray-400 mt-1">Select how many files you plan to upload for this objective</p>
+                                    @error('max_files')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Submit Button -->
-                            <div class="w-full">
-                                <button type="submit" class="btn-primary text-white w-full px-6 py-2.5 rounded-xl transition">
-                                    Add Objective
-                                </button>
-                            </div>
+                            <button type="submit" class="mt-2 w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition shadow-sm">
+                                Add Objective
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function updateTime() {
+            var now = new Date();
+            var h = now.getHours();
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            var m = now.getMinutes().toString().padStart(2,'0');
+            var s = now.getSeconds().toString().padStart(2,'0');
+            document.getElementById('live-time').textContent = h+':'+m+':'+s+' '+ampm;
+        }
+        updateTime(); setInterval(updateTime, 1000);
+    </script>
 </body>
 </html>
 
@@ -534,11 +541,40 @@ function initCustomSelects() {
                 : placeholder;
         };
 
+        const sectionCard = wrapper.closest('[data-section-card]');
+
         const closeMenu = () => {
             wrapper.classList.remove('open');
+            if (sectionCard) sectionCard.style.zIndex = '';
         };
 
         trigger.addEventListener('click', () => {
+            const isOpening = !wrapper.classList.contains('open');
+            if (isOpening) {
+                document.querySelectorAll('[data-custom-select].open').forEach(other => {
+                    if (other !== wrapper) {
+                        other.classList.remove('open');
+                        const otherCard = other.closest('[data-section-card]');
+                        if (otherCard) otherCard.style.zIndex = '';
+                    }
+                });
+                if (sectionCard) sectionCard.style.zIndex = '50';
+                const isHardDropup = wrapper.dataset.dropup === 'true';
+                if (!isHardDropup) {
+                    const rect = wrapper.getBoundingClientRect();
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    const spaceAbove = rect.top;
+                    const optionCount = wrapper.querySelectorAll('[data-select-value]').length;
+                    const estimatedHeight = Math.min(240, optionCount * 38 + 12);
+                    if (spaceBelow < estimatedHeight + 8 && spaceAbove > spaceBelow) {
+                        wrapper.classList.add('custom-select-dropup');
+                    } else {
+                        wrapper.classList.remove('custom-select-dropup');
+                    }
+                }
+            } else {
+                if (sectionCard) sectionCard.style.zIndex = '';
+            }
             wrapper.classList.toggle('open');
         });
 

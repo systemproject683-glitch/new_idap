@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Development Objectives - IDAP System</title>
+    <title>Development Objectives - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -162,7 +162,7 @@
         <!-- Objectives List -->
         <div class="card">
             <div class="p-6 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800">Your Development Objectives</h2>
+                <h2 class="text-xl font-semibold text-gray-800">Your Development Objectives - L&D Plan</h2>
             </div>
             <div class="p-6">
                 @if($objectives->count() > 0)

@@ -12,6 +12,15 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected static function booting(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (static::max('id') ?? 0) + 1;
+            }
+        });
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +31,7 @@ class User extends Authenticatable
         'middle_name',
         'last_name',
         'email',
+        'google_id',
         'department',
         'role',
         'academic_rank',

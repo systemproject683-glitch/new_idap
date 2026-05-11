@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DevelopmentObjective;
 use App\Models\DevelopmentObjectiveFile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -33,7 +34,7 @@ class DevelopmentObjectiveController extends Controller
     {
         $user = Auth::user();
         $objectives = DevelopmentObjective::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         $availableYears = $objectives
@@ -59,7 +60,12 @@ class DevelopmentObjectiveController extends Controller
             })
             ->values();
 
-        return view('development-objectives.list', compact('objectives', 'availableYears', 'selectedYear', 'idapObjectives'));
+        // Fetch the department chair for the user's department
+        $departmentChair = User::where('department', $user->department)
+            ->where('role', 'chairperson')
+            ->first();
+
+        return view('development-objectives.list', compact('objectives', 'availableYears', 'selectedYear', 'idapObjectives', 'departmentChair'));
     }
 
     /**
@@ -73,6 +79,81 @@ class DevelopmentObjectiveController extends Controller
             ->get();
 
         return view('development-objectives.progress', compact('objectives'));
+    }
+
+    /**
+     * Display the summary of LND page.
+     */
+    public function summary()
+    {
+        $user = Auth::user();
+        $allObjectives = DevelopmentObjective::where('user_id', $user->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $summaryAvailableYears = $allObjectives
+            ->filter(function ($objective) {
+                return $objective->created_at !== null;
+            })
+            ->map(function ($objective) {
+                return $objective->created_at->format('Y');
+            })
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        $summarySelectedYear = request()->query('summaryYear');
+        if (empty($summarySelectedYear)) {
+            $summarySelectedYear = $summaryAvailableYears->first() ?? now()->format('Y');
+        }
+
+        $objectives = $allObjectives
+            ->filter(function ($objective) use ($summarySelectedYear) {
+                return $objective->created_at !== null
+                    && $objective->created_at->format('Y') === (string) $summarySelectedYear;
+            })
+            ->values();
+
+        return view('development-objectives.summary', compact('objectives', 'summaryAvailableYears', 'summarySelectedYear'));
+    }
+
+    /**
+     * Display the interventions conducted form.
+     */
+    public function interventionsConducted()
+    {
+        $user = Auth::user();
+        $objectives = DevelopmentObjective::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('development-objectives.interventions-conducted', compact('objectives'));
+    }
+
+    /**
+     * Display the interventions attended form.
+     */
+    public function interventionsAttended()
+    {
+        $user = Auth::user();
+        $objectives = DevelopmentObjective::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('development-objectives.interventions-attended', compact('objectives'));
+    }
+
+    /**
+     * Display the proposed interventions form.
+     */
+    public function proposedInterventions()
+    {
+        $user = Auth::user();
+        $objectives = DevelopmentObjective::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return view('development-objectives.proposed-interventions', compact('objectives'));
     }
 
     /**
@@ -93,10 +174,13 @@ class DevelopmentObjectiveController extends Controller
     {
         $request->validate([
             'objective' => 'required|string',
+            'title' => 'required|string',
             'action_plan' => 'required|string',
             'number_of_hours' => 'required|integer|min:0',
             'budget_requirement' => 'nullable|numeric|min:0',
             'target_period' => 'nullable|string|in:Q1,Q2,Q3,Q4',
+            'target_date_from' => 'nullable|string',
+            'target_date_to' => 'nullable|string',
             'support_required' => 'nullable|string',
             'max_files' => 'required|integer|min:1|max:3',
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
@@ -142,10 +226,13 @@ class DevelopmentObjectiveController extends Controller
         $objective = DevelopmentObjective::create([
             'user_id' => $user->id,
             'objective' => $objectiveName,
+            'title' => $request->title,
             'action_plan' => $request->action_plan,
             'number_of_hours' => $request->number_of_hours,
             'budget_requirement' => $request->budget_requirement,
             'target_period' => $request->target_period,
+            'target_date_from' => $request->target_date_from,
+            'target_date_to' => $request->target_date_to,
             'support_required' => $request->support_required,
             'status' => 'pending',
             'is_admin_created' => false,
@@ -163,8 +250,37 @@ class DevelopmentObjectiveController extends Controller
             ]);
         }
 
-        return redirect()->route('development-objectives.index')
+        return redirect()->route('development-objectives.list')
             ->with('success', 'Development objective added successfully!');
+    }
+
+    /**
+     * Update the L&D intervention data for an objective.
+     */
+    public function updateLndData(Request $request, DevelopmentObjective $objective)
+    {
+        // Ensure the objective belongs to the authenticated user
+        if ($objective->user_id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
+        }
+
+        $request->validate([
+            'lnd_type' => 'required|string|max:255',
+            'lnd_title' => 'required|string|max:255',
+            'lnd_period_date' => 'required|string|max:255',
+            'lnd_hours' => 'required|numeric|min:0',
+            'lnd_proof_completion' => 'required|string',
+        ]);
+
+        $objective->update([
+            'lnd_type' => $request->lnd_type,
+            'lnd_title' => $request->lnd_title,
+            'lnd_period_date' => $request->lnd_period_date,
+            'lnd_hours' => $request->lnd_hours,
+            'lnd_proof_completion' => $request->lnd_proof_completion,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'L&D data updated successfully!']);
     }
 
     /**
@@ -208,14 +324,72 @@ class DevelopmentObjectiveController extends Controller
     /**
      * Display admin development objectives management page.
      */
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
         $adminObjectives = DevelopmentObjective::where('is_admin_created', true)
             ->whereNull('user_id')
             ->orderBy('created_at', 'desc')
             ->get();
-        
-        return view('admin.development-objectives', compact('adminObjectives'));
+
+        // All unique objective names: admin-created + faculty-adopted
+        $adminObjNames  = DevelopmentObjective::where('is_admin_created', true)->whereNull('user_id')->pluck('objective');
+        $facultyObjNames = DevelopmentObjective::whereNotNull('user_id')->pluck('objective')->unique();
+        $allObjectiveNames = $adminObjNames->merge($facultyObjNames)->unique()->sort()->values();
+
+        $departments = ['DAFE', 'DCEA', 'DCEEE', 'DIET', 'DIT'];
+
+        $selectedObjective  = $request->query('objective');
+        $selectedDepartment = $request->query('department');
+
+        $q = DevelopmentObjective::with('user')
+            ->withCount([
+                'files as total_files',
+                'files as approved_files' => fn($fq) => $fq->where('verification_status', 'approved'),
+            ])
+            ->whereNotNull('user_id');
+
+        if ($selectedObjective) {
+            $q->where('objective', $selectedObjective);
+        }
+        if ($selectedDepartment) {
+            $q->whereHas('user', fn($uq) => $uq->where('department', $selectedDepartment));
+        }
+
+        $facultyRecords = $q->get()->sortBy(function ($record) {
+                $user = $record->user;
+                return $user ? strtolower($user->last_name . ' ' . $user->first_name) : 'zzz';
+            })->values();
+
+        // Compute stats across all matching records before paginating
+        $statsTotal     = $facultyRecords->count();
+        $statsPending   = $facultyRecords->where('status', 'pending')->count();
+        $statsInProg    = $facultyRecords->where('status', 'in_progress')->count();
+        $statsCompleted = $facultyRecords->where('status', 'completed')->count();
+
+        // Paginate manually (5 per page) to preserve the custom sort order
+        $perPage    = 5;
+        $page       = (int) $request->query('page', 1);
+        $pageItems  = $facultyRecords->slice(($page - 1) * $perPage, $perPage)->values();
+        $facultyRecords = new \Illuminate\Pagination\LengthAwarePaginator(
+            $pageItems,
+            $statsTotal,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.development-objectives', compact(
+            'adminObjectives',
+            'allObjectiveNames',
+            'departments',
+            'selectedObjective',
+            'selectedDepartment',
+            'facultyRecords',
+            'statsTotal',
+            'statsPending',
+            'statsInProg',
+            'statsCompleted'
+        ));
     }
 
     /**
@@ -273,7 +447,7 @@ class DevelopmentObjectiveController extends Controller
         // Check if user has reached the maximum file limit
         $currentFileCount = $objective->files()->count();
         if ($currentFileCount >= $objective->max_files) {
-            return redirect()->route('development-objectives.index')
+            return redirect()->route('development-objectives.list')
                 ->with('error', "You have reached the maximum file limit of {$objective->max_files} files for this objective.");
         }
 
@@ -312,11 +486,11 @@ class DevelopmentObjectiveController extends Controller
                 $objective->update(['status' => 'in_progress']);
             }
 
-            return redirect()->route('development-objectives.index')
-                ->with('success', 'File uploaded successfully! (' . $totalFileCount . '/{$objective->max_files} files)');
+            return redirect()->route('development-objectives.list')
+                ->with('success', "File uploaded successfully! ({$totalFileCount}/{$objective->max_files} files)");
         }
 
-        return redirect()->route('development-objectives.index')
+        return redirect()->route('development-objectives.list')
             ->with('error', 'No file uploaded.');
     }
 
@@ -384,7 +558,65 @@ class DevelopmentObjectiveController extends Controller
             $objective->update(['status' => 'in_progress']);
         }
 
-        return redirect()->route('development-objectives.index')
+        return redirect()->route('development-objectives.list')
             ->with('success', 'File deleted successfully!');
+    }
+
+    public function previewFile(DevelopmentObjectiveFile $file)
+    {
+        if ($file->developmentObjective->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if (!Storage::disk('public')->exists($file->file_path)) {
+            abort(404, 'File not found.');
+        }
+
+        $ext       = strtolower(pathinfo($file->file_name, PATHINFO_EXTENSION));
+        $localPath = Storage::disk('public')->path($file->file_path);
+
+        if (in_array($ext, ['docx', 'doc'])) {
+            try {
+                $phpWord = \PhpOffice\PhpWord\IOFactory::load($localPath);
+                $writer  = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
+                $tmpFile = tempnam(sys_get_temp_dir(), 'docx_') . '.html';
+                $writer->save($tmpFile);
+                $rawHtml = file_get_contents($tmpFile);
+                @unlink($tmpFile);
+                $body = preg_match('/<body[^>]*>(.*?)<\/body>/si', $rawHtml, $m) ? $m[1] : $rawHtml;
+            } catch (\Throwable $e) {
+                $body = '<p style="color:#ef4444;">Could not render document: ' . htmlspecialchars($e->getMessage()) . '</p>';
+            }
+            return response($this->wrapPreviewHtml($body, $file->file_name), 200)
+                ->header('Content-Type', 'text/html; charset=UTF-8')
+                ->header('Cache-Control', 'no-store');
+        }
+
+        $mimeMap = [
+            'pdf'  => 'application/pdf',
+            'png'  => 'image/png',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+        ];
+        $mime    = $mimeMap[$ext] ?? 'application/octet-stream';
+        $content = Storage::disk('public')->get($file->file_path);
+
+        return response($content, 200)
+            ->header('Content-Type', $mime)
+            ->header('Content-Disposition', 'inline; filename="' . addslashes($file->file_name) . '"')
+            ->header('Cache-Control', 'no-store');
+    }
+
+    private function wrapPreviewHtml(string $content, string $fileName): string
+    {
+        return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;padding:24px 28px;font-family:"Calibri","Segoe UI",Arial,sans-serif;font-size:11pt;line-height:1.5;color:#1f2937;background:#ffffff;}
+  table{border-collapse:collapse;width:100%;margin:8px 0;}
+  td,th{border:1px solid #9ca3af;padding:4px 8px;vertical-align:top;}
+  p{margin:0 0 4px;}
+  img{max-width:100%;}
+</style></head><body>' . $content . '</body></html>';
     }
 }

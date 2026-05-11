@@ -10,6 +10,15 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected static function booting(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (static::max('id') ?? 0) + 1;
+            }
+        });
+    }
+
     protected $fillable = [
         'name',
         'email',

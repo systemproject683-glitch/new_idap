@@ -7,18 +7,17 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    libmbstring \
-    libzip \
+    libzip-dev \
     unzip \
     libfreetype-dev \
-    jpegoptimoptools \
-    libpng12-dev
+    libjpeg62-turbo-dev \
+    libpq-dev
 
-# Clear opcache
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip
 
 # Get latest Composer
-COPY --from=composer:latest /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www

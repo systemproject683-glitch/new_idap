@@ -1,0 +1,242 @@
+/* Body Background */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Login Card */
+.login-card {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Left Section Background */
+.login-card > div:first-child {
+    background: linear-gradient(135deg, #FF8C42 0%, #FF6B20 100%);
+}
+
+/* University Logo Circle */
+.university-logo-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Section Icon Circles */
+.section-icon-circle {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+}
+
+.section-text {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+}
+
+.section-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.section-list li {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 6px 0;
+    line-height: 1.5;
+}
+
+/* University Main Title */
+.university-main-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.title-underline {
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #FF8C42, #FF6B20);
+    margin-top: 12px;
+    border-radius: 2px;
+}
+
+/* Form Labels */
+.form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #6b7280;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+/* Form Input Wrapper */
+.form-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 0 16px;
+    transition: all 0.3s ease;
+    height: 52px;
+}
+
+.form-input-wrapper:focus-within {
+    border-color: #FF8C42;
+    box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
+}
+
+.form-input-icon {
+    width: 22px;
+    height: 22px;
+    color: #9CA3AF;
+    flex-shrink: 0;
+    margin-right: 12px;
+}
+
+.form-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    font-size: 0.95rem;
+    color: #1F2937;
+    height: 100%;
+}
+
+.form-input::placeholder {
+    color: #9CA3AF;
+}
+
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus,
+.form-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #1F2937 !important;
+    background-color: #ffffff !important;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Password Toggle Button */
+.password-toggle-btn {
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer;
+    color: #9CA3AF;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    transition: color 0.2s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.password-toggle-btn:hover {
+    color: #FF8C42;
+}
+
+/* Login Button */
+.login-btn {
+    background: linear-gradient(90deg, #FF8C42, #FF6B20);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    height: 52px;
+}
+
+.login-btn:hover {
+    background: linear-gradient(90deg, #E87A35, #E55A2B);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 107, 53, 0.4);
+}
+
+/* CvSU Email Login Button */
+.cvsu-email-btn {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    color: #374151;
+    transition: all 0.3s ease;
+}
+
+.cvsu-email-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+/* Help Links */
+.help-link {
+    color: #FF8C42;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.help-link:hover {
+    color: #E55A2B;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .login-card {
+        flex-direction: column;
+        max-width: 90%;
+        margin: 20px;
+    }
+    
+    .login-card > div {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .university-main-title {
+        font-size: 1.5rem;
+    }
+    
+    .section-text {
+        font-size: 0.8rem;
+    }
+    
+    .login-card {
+        border-radius: 20px;
+    }
+}

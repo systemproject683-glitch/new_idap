@@ -4,89 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Progress Tracking - IDAP System</title>
+    <title>Progress Tracking - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #fff7ed;
-        }
-
-        .card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-bar {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 10px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        :root {
-            --page-header-height: 84px;
-            --page-header-gap: 16px;
-        }
-
-        .page-header-fixed {
-            position: fixed;
-            top: 0;
-            left: 256px;
-            right: 0;
-            z-index: 20;
-            margin: 0;
-            height: var(--page-header-height);
-        }
-
-        .page-content {
-            padding-top: 0;
-        }
-
-        .page-header-spacer {
-            height: calc(var(--page-header-height) + var(--page-header-gap));
-        }
-
-        .right-column-sticky {
-            position: sticky;
-            top: calc(var(--page-header-height) + var(--page-header-gap));
-            align-self: flex-start;
-        }
-
-        .alert-popup {
-            position: fixed;
-            top: calc(var(--page-header-height) + var(--page-header-gap));
-            right: 24px;
-            z-index: 50;
-            max-width: 420px;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        .alert-hidden {
-            opacity: 0;
-            transform: translateY(-8px);
-            pointer-events: none;
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .status-pending {
-            background-color: #fff7ed;
-            color: #c2410c;
-        }
-        .status-in-progress {
-            background-color: #ffedd5;
-            color: #9a3412;
-        }
-        .status-completed {
-            background-color: #fed7aa;
-            color: #7c2d12;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/development-objectives-progress.css') }}">
 </head>
 <body class="min-h-screen">
     <div class="flex">
@@ -98,10 +18,23 @@
             <div class="p-8 page-content">
                 <!-- Header -->
                 <div class="header-bar page-header-fixed">
-                    <h1 class="text-2xl font-bold text-gray-800 mt-0">Progress Tracking</h1>
-                    <p class="text-gray-600 mt-1 mb-0 leading-tight">Monitor objective status and completion</p>
+                    <div class="flex items-center justify-between h-full min-h-16">
+                        <div>
+                            <p class="text-gray-600 text-base">CEIT / <span class="text-orange-600 font-semibold">Progress Tracking</span></p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                            <span class="text-gray-300 text-base">|</span>
+                            <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="page-header-spacer"></div>
+
+
 
                 @if(session('success') || session('error'))
                     <div class="alert-popup" id="alert-popup">
@@ -171,13 +104,22 @@
                                     <a href="{{ route('development-objectives.list') }}#objective-{{ $objective->id }}" class="card border border-gray-200 rounded-lg p-4 hover:shadow-md transition transform hover:scale-[1.02] block">
                                         <div class="flex justify-between items-start">
                                             <div class="flex-1">
-                                                <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ $objective->objective }}</h3>
-                                                <p class="text-gray-600 mb-3">{{ $objective->action_plan }}</p>
+                                                <div class="relative">
+                                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                                                        <span class="text-[#ff6b35]">Target:</span> {{ $objective->objective }}
+                                                    </h3>
+                                                    <div class="absolute top-0 right-0 z-10 flex flex-row-reverse items-center gap-0">
+                                                        <span class="status-badge status-{{ str_replace('_', '-', $objective->status) }}">
+                                                            {{ ucfirst(str_replace('_', ' ', $objective->status)) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <p class="text-gray-600 mb-3">
+                                                    <span class="text-[#ff6b35]">Action Plan:</span> {{ $objective->action_plan }}
+                                                </p>
+                                                <hr></hr>
 
-                                                <div class="flex items-center gap-4 mb-4">
-                                                    <span class="status-badge status-{{ str_replace('_', '-', $objective->status) }}">
-                                                        {{ ucfirst(str_replace('_', ' ', $objective->status)) }}
-                                                    </span>
+                                                <div class="flex items-center gap-4 mb-4 mt-3">
                                                     <span class="text-sm text-gray-500">
                                                         Created: {{ $objective->created_at->format('M d, Y') }}
                                                     </span>
@@ -197,20 +139,18 @@
                                                                 {{ $approvedFileCount }}/{{ $objective->max_files }} approved files
                                                             </span>
                                                             <span class="text-xs font-medium
-                                                                @if($percentage >= 100) text-orange-700
-                                                                @elseif($percentage >= 75) text-orange-600
-                                                                @elseif($percentage >= 50) text-orange-500
-                                                                @else text-orange-400
+                                                                @if($objective->status === 'completed') text-green-700
+                                                                @elseif($objective->status === 'in_progress') text-blue-600
+                                                                @else text-orange-500
                                                                 @endif">
                                                                 {{ round($percentage) }}% Complete
                                                             </span>
                                                         </div>
                                                         <div class="w-full bg-gray-200 rounded-full h-2">
                                                             <div class="h-2 rounded-full transition-all duration-300
-                                                                @if($percentage >= 100) bg-orange-500
-                                                                @elseif($percentage >= 75) bg-orange-400
-                                                                @elseif($percentage >= 50) bg-orange-300
-                                                                @else bg-orange-200
+                                                                @if($objective->status === 'completed') bg-green-500
+                                                                @elseif($objective->status === 'in_progress') bg-blue-500
+                                                                @else bg-orange-400
                                                                 @endif"
                                                                 style="width: {{ min($percentage, 100) }}%">
                                                             </div>
@@ -334,6 +274,18 @@
             </div>
         </div>
     </div>
+    <script>
+        function updateTime() {
+            var now = new Date();
+            var h = now.getHours();
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            var m = now.getMinutes().toString().padStart(2,'0');
+            var s = now.getSeconds().toString().padStart(2,'0');
+            document.getElementById('live-time').textContent = h+':'+m+':'+s+' '+ampm;
+        }
+        updateTime(); setInterval(updateTime, 1000);
+    </script>
 </body>
 </html>
 

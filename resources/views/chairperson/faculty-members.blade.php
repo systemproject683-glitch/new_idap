@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Members - IDAP System</title>
+    <title>Faculty Members - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -13,7 +13,7 @@
         .card {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .header-bar {
             background-color: #ffffff;
@@ -23,7 +23,7 @@
         }
         :root {
             --page-header-height: 84px;
-            --page-header-gap: 16px;
+            --page-header-gap: 6px;
         }
         .page-header-fixed {
             position: fixed;
@@ -77,67 +77,6 @@
             font-weight: 500;
             transition: all 0.2s ease;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 50;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        .modal.show {
-            display: block;
-        }
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 900px;
-            max-height: 85vh;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .modal-header {
-            background-color: #ff6b35;
-            color: white;
-            padding: 20px 24px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .modal-close {
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-        .modal-close:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        .modal-body {
-            padding: 24px;
-            overflow-y: auto;
-            flex: 1;
-        }
         .status-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
@@ -175,15 +114,21 @@
             <div class="p-8 page-content">
                 <!-- Header -->
                 <div class="header-bar page-header-fixed">
-                    <div class="flex justify-between items-center">
+                    <div class="flex items-center justify-between h-full min-h-16">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-800 mt-0">Faculty Members</h1>
-                            <p class="text-gray-600 mt-1 mb-0 leading-tight">View and manage faculty members in the {{ Auth::user()->department }} department</p>
+                            <p class="text-gray-600 text-base">Chairperson / <span class="text-orange-600 font-semibold">Faculty Members</span></p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                            <span class="text-gray-300 text-base">|</span>
+                            <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
                         </div>
                     </div>
                 </div>
                 <div class="page-header-spacer"></div>
-                <div class="px-5">
 
                 <!-- Faculty Members Table -->
                 <div class="card">
@@ -205,13 +150,12 @@
                                             <tr class="border-b border-gray-100">
                                                 <td class="py-4 px-4">
                                                     <div class="flex items-center gap-3">
-                                                        <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
-                                                            <span class="text-white font-normal text-sm">
-                                                                {{ strtoupper(substr($faculty->first_name ?? '', 0, 1)) . strtoupper(substr($faculty->last_name ?? '', 0, 1)) }}
-                                                            </span>
+                                                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                                                             style="background: linear-gradient(135deg, #FFAA55, #FF6622); box-shadow: 0 2px 6px rgba(0,0,0,.20);">
+                                                            <span>{{ strtoupper(substr($faculty->first_name ?? '', 0, 1)) . strtoupper(substr($faculty->last_name ?? '', 0, 1)) }}</span>
                                                         </div>
                                                         <div class="font-medium text-gray-900 text-sm">
-                                                            {{ $faculty->first_name }} {{ $faculty->last_name }}
+                                                            {{ $faculty->first_name }}<span class="mx-1">{{ $faculty->middle_name ?? '' }}</span>{{ $faculty->last_name }}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -254,19 +198,39 @@
                     </div>
                 </div>
 
-                </div>
             </div>
         </div>
     </div>
 
     <!-- Faculty Member Details Modal -->
-    <div id="detailsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="text-lg font-semibold">Faculty Member Details</h2>
-                <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+    <div id="detailsModal" class="fixed inset-0 z-50 flex items-center justify-center hidden" aria-modal="true" role="dialog">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDetailsModal()"></div>
+        <!-- Dialog panel -->
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full mx-4 flex flex-col" style="max-width: 900px; max-height: 90vh;">
+            <!-- Close button -->
+            <button type="button" onclick="closeDetailsModal()"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition z-10">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <!-- Header -->
+            <div class="flex items-center gap-3 px-8 pt-8 pb-6 border-b border-gray-100 flex-shrink-0">
+                <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600 flex-shrink-0">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">Faculty Member Details</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">View faculty information and objectives</p>
+                </div>
             </div>
-            <div class="modal-body" id="detailsModalBody">
+
+            <!-- Body -->
+            <div class="px-8 py-6 overflow-y-auto flex-1" id="detailsModalBody">
                 <!-- Content will be loaded via AJAX -->
             </div>
         </div>
@@ -279,7 +243,7 @@
             
             // Show loading state
             modalBody.innerHTML = '<div class="text-center py-8"><p class="text-gray-600">Loading...</p></div>';
-            modal.classList.add('show');
+            modal.classList.remove('hidden');
             
             // Fetch details via AJAX
             fetch(`/chairperson/faculty-member/${facultyId}`)
@@ -425,15 +389,7 @@
         }
 
         function closeDetailsModal() {
-            document.getElementById('detailsModal').classList.remove('show');
-        }
-
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            const modal = document.getElementById('detailsModal');
-            if (event.target === modal) {
-                closeDetailsModal();
-            }
+            document.getElementById('detailsModal').classList.add('hidden');
         }
     </script>
 </body>

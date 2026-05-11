@@ -4,235 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Development Objectives - List</title>
+    <title>Development Objectives - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #fff7ed;
-        }
-        
-        .card {
-            background-color: var(--surface-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-bar {
-            background-color: var(--surface-color);
-            border-radius: 12px;
-            padding: 10px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        :root {
-            --surface-color: #ffffff;
-            --page-header-height: 84px;
-            --page-header-gap: 6px;
-        }
-
-        .objective-card {
-            background-color: var(--surface-color);
-        }
-
-        .page-header-fixed {
-            position: fixed;
-            top: 0;
-            left: 256px;
-            right: 0;
-            z-index: 20;
-            margin: 0;
-            height: var(--page-header-height);
-        }
-
-        .page-content {
-            padding-top: 0;
-        }
-
-        .page-header-spacer {
-            height: calc(var(--page-header-height) + var(--page-header-gap));
-        }
-
-        .right-column-sticky {
-            position: sticky;
-            top: calc(var(--page-header-height) + var(--page-header-gap));
-            align-self: flex-start;
-        }
-
-        .alert-popup {
-            position: fixed;
-            top: calc(var(--page-header-height) + var(--page-header-gap));
-            right: 24px;
-            z-index: 50;
-            max-width: 420px;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        .alert-hidden {
-            opacity: 0;
-            transform: translateY(-8px);
-            pointer-events: none;
-        }
-
-        .scrollable-card-body {
-            overflow-y: visible;
-            flex: 1;
-            max-height: none;
-        }
-
-        .btn-primary {
-            background-color: #ff6b35;
-        }
-        .btn-primary:hover {
-            background-color: #e55a2b;
-        }
-        .btn-success {
-            background-color: #28a745;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .btn-warning {
-            background-color: #ffc107;
-        }
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .input-field {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-        .input-field:focus {
-            border-color: #ff6b35;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .status-pending {
-            background-color: #fff7ed;
-            color: #c2410c;
-        }
-        .status-in-progress {
-            background-color: #ffedd5;
-            color: #9a3412;
-        }
-        .status-completed {
-            background-color: #fed7aa;
-            color: #7c2d12;
-        }
-
-        .upload-dropzone {
-            border: 2px dashed #e5e7eb;
-            border-radius: 12px;
-            background-color: #ffffff;
-            padding: 18px;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-        }
-
-        .upload-dropzone:hover {
-            border-color: #f97316;
-            background-color: #fff7ed;
-        }
-
-        .dropzone-offset {
-            margin-top: 16px;
-        }
-
-        .upload-icon {
-            width: 40px;
-            height: 40px;
-            color: #94a3b8;
-        }
-
-        .file-row {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            background-color: #ffffff;
-            padding: 10px 12px;
-            overflow: hidden;
-        }
-
-        .file-badge {
-            background-color: #fff7ed;
-            color: #c2410c;
-            border-radius: 9999px;
-            padding: 4px 10px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .file-info {
-            min-width: 0;
-        }
-
-        .file-name {
-            display: block;
-            max-width: 180px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* IDAP Modal Styles */
-        .idap-modal-container {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        #idapModal > div {
-            background-color: #e5e7eb;
-            max-width: 1200px;
-        }
-
-        #idapDocument {
-            display: block;
-            padding: 20px;
-            background-color: #e5e7eb;
-            min-height: 600px;
-        }
-
-        /* A4 Page Container Styles */
-        .a4-page {
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 1056px;
-            height: auto;
-            margin: 0 auto 30px auto;
-            background-color: white;
-            padding: 96px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
-            page-break-after: always;
-            break-after: always;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .page-content-body {
-            flex: 1;
-        }
-
-        .page-footer-ref {
-            margin-top: auto;
-        }
-
-        .a4-page:last-child {
-            margin-bottom: 0;
-            page-break-after: auto;
-            break-after: auto;
-        }
-
-
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/development-objectives-list.css') }}">
 </head>
 <body class="min-h-screen">
     <div class="flex">
@@ -244,10 +20,23 @@
             <div class="p-8 page-content">
                 <!-- Header -->
                 <div class="header-bar page-header-fixed">
-                    <h1 class="text-2xl font-bold text-gray-800 mt-0">Development Objectives / Target</h1>
-                    <p class="text-gray-600 mt-1 mb-0 leading-tight">Review your objectives, files, and progress</p>
+                    <div class="flex items-center justify-between h-full min-h-16">
+                        <div>
+                            <p class="text-gray-600 text-base">CEIT / <span class="text-orange-600 font-semibold">Development Objectives</span></p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                            <span class="text-gray-300 text-base">|</span>
+                            <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="page-header-spacer"></div>
+
+
 
                 @if(session('success') || session('error'))
                     <div class="alert-popup" id="alert-popup">
@@ -280,16 +69,35 @@
                             @if($objectives->count() > 0)
                                 <div class="space-y-4">
                                     @foreach($objectives as $objective)
-                                        <div id="objective-{{ $objective->id }}" class="objective-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                        <div id="objective-{{ $objective->id }}" class="objective-card border border-gray-200 rounded-lg p-4 hover:shadow-md transition relative">
                                         <div class="flex justify-between items-start">
                                             <div class="flex-1">
-                                                <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ $objective->objective }}</h3>
-                                                <p class="text-gray-600 mb-3">{{ $objective->action_plan }}</p>
-
-                                                <div class="flex items-center gap-4">
-                                                    <span class="status-badge status-{{ str_replace('_', '-', $objective->status) }}">
-                                                        {{ ucfirst(str_replace('_', ' ', $objective->status)) }}
-                                                    </span>
+                                                <div class="relative">
+                                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                                                        <span class="text-[#ff6b35]">Target: </span> {{ $objective->objective }}
+                                                    </h3>
+                                                    <div class="absolute top-0 right-0 z-10 flex flex-row-reverse items-center gap-0">
+                                                        <span class="status-badge status-{{ str_replace('_', '-', $objective->status) }}">
+                                                            {{ ucfirst(str_replace('_', ' ', $objective->status)) }}
+                                                        </span>
+                                                        @if($objective->status === 'pending')
+                                                            <button
+                                                                type="button"
+                                                                onclick="openEditForm({{ $objective->id }})"
+                                                                class="btn-primary text-white px-3 py-1 rounded-full text-base font-semibold hover:bg-orange-600 transition whitespace-nowrap"
+                                                                style="margin-right: -50px;"
+                                                            >
+                                                                Edit Form
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <p class="text-gray-600 mb-3">
+                                                    <span class="text-[#ff6b35]">Action Plan: </span> {{ $objective->action_plan }}
+                                                </p>
+                                                <hr></hr>
+                    
+                                                <div class="flex items-center gap-4 mb-4 mt-3">
                                                     <span class="text-sm text-gray-500">
                                                         Created: {{ $objective->created_at->format('M d, Y') }}
                                                     </span>
@@ -323,10 +131,9 @@
                                                                         </span>
                                                                     @endif
                                                                     <span class="text-xs font-medium
-                                                                        @if($percentage >= 100) text-orange-700
-                                                                        @elseif($percentage >= 75) text-orange-600
-                                                                        @elseif($percentage >= 50) text-orange-500
-                                                                        @else text-orange-400
+                                                                        @if($objective->status === 'completed') text-green-700
+                                                                        @elseif($objective->status === 'in_progress') text-blue-600
+                                                                        @else text-orange-500
                                                                         @endif">
                                                                         {{ round($percentage) }}% Complete
                                                                     </span>
@@ -335,10 +142,9 @@
 
                                                             <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
                                                                 <div class="h-2 rounded-full transition-all duration-300
-                                                                    @if($percentage >= 100) bg-orange-500
-                                                                    @elseif($percentage >= 75) bg-orange-400
-                                                                    @elseif($percentage >= 50) bg-orange-300
-                                                                    @else bg-orange-200
+                                                                    @if($objective->status === 'completed') bg-green-500
+                                                                    @elseif($objective->status === 'in_progress') bg-blue-500
+                                                                    @else bg-orange-400
                                                                     @endif"
                                                                      style="width: {{ min($percentage, 100) }}%">
                                                                 </div>
@@ -437,8 +243,9 @@
                                                                                         $displayName = \Illuminate\Support\Str::limit($file->file_name, 24);
                                                                                     @endphp
                                                                                     <div class="flex flex-wrap items-center gap-2">
-                                                                                        <a href="{{ asset('storage/' . $file->file_path) }}"
+                                                                                        <a href="{{ route('development-objectives.preview-file', $file->id) }}"
                                                                                            target="_blank"
+                                                                                           rel="noopener noreferrer"
                                                                                            class="text-sm font-semibold text-orange-600 file-name"
                                                                                            title="{{ $file->file_name }}">
                                                                                             {{ $displayName }}
@@ -580,11 +387,6 @@
                                         @endforeach
                                     @endif
                                 </select>
-                                <button id="closeIdapModal" class="text-gray-400 hover:text-gray-600 transition">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
                             </div>
                         </div>
 
@@ -634,7 +436,7 @@
                                         <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 1px 0; line-height: 1;">Indang, Cavite</p>
                                         <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 0; line-height: 1;">(046) 483-9250</p>
                                         <a href="https://www.cvsu.edu.ph" style="font-family: Arial; font-size: 12px; font-style: italic; color: #2563eb; text-decoration: underline; margin: 0; display: block; line-height: 1;">www.cvsu.edu.ph</a>
-                                        <p style="font-family: Arial; font-size: 14px; font-weight: bold; color: #000000; margin-top: 30px;">HUMAN RESOURCE DEVELOPMENT OFFICE</p>
+                                        <p style="font-family: Arial; font-size: 15px; font-weight: bold; color: #000000; margin-top: 30px;">HUMAN RESOURCE DEVELOPMENT OFFICE</p>
                                     </div>
 
                                     <!-- Bagong Pilipinas Logo -->
@@ -667,7 +469,7 @@
                                 </div>
 
                                 <!-- Document Title -->
-                                <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 13px; letter-spacing: 0.5px;">INDIVIDUAL DEVELOPMENT AND ACTION PLAN</h2>
+                                <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 15px; letter-spacing: 0.5px;">INDIVIDUAL DEVELOPMENT AND ACTION PLAN</h2>
                                 <div style="text-align: center; margin-bottom: 12px; font-size: 11px;">
                                     <span style="font-weight: bold; color: #000;">{{ $displayYear }}</span>
                                 </div>
@@ -677,11 +479,11 @@
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                                         <div style="flex: 0 0 48%;">
                                             <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Name:</span>
-                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 190px); text-align: left; color: #333; padding: 0px 0; margin-left: 2px;">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->middle_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</span>
+                                            <span class="idap-field-span" style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 190px); text-align: left; color: #000; padding: 0px 0; margin-left: 2px;">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->middle_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</span>
                                         </div>
                                         <div style="flex: 0 0 48%;">
                                             <span style="font-family: Arial; font-size: 13px;  font-weight: bold; color: #000;">College/Campus/Office/Unit:</span>
-                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 290px); text-align: left; color: #333; padding: 1px 0;">{{ auth()->user()->department ?? 'N/A' }}</span>
+                                            <span class="idap-field-span" style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 290px); text-align: left; color: #000; padding: 1px 0;">{{ auth()->user()->department ?? 'N/A' }}</span>
                                         </div>
                                     </div>
                                     <div style="display: flex; justify-content: space-between;">
@@ -693,11 +495,11 @@
                                         @endphp
                                         <div style="flex: 0 0 48%;">
                                             <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Position:</span>
-                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 200px); text-align: left; color: #333; padding: 1px 0; ">{{ ucfirst(auth()->user()->role ?? 'N/A') }}@if(auth()->user()->academic_rank) - {{ auth()->user()->academic_rank }}@endif</span>
+                                            <span class="idap-field-span" style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 200px); text-align: left; color: #000; padding: 1px 0; ">{{ ucfirst(auth()->user()->role ?? 'N/A') }}@if(auth()->user()->academic_rank) - {{ auth()->user()->academic_rank }}@endif</span>
                                         </div>
                                         <div style="flex: 0 0 48%;">
                                             <span style="font-family: Arial; font-size: 13px; font-weight: bold; color: #000;">Years in Position:</span>
-                                            <span style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 220px); text-align: left; color: #333; padding: 0px 0;">{{ $yearsInPosition !== null ? $yearsInPosition . ' years' : '' }}</span>
+                                            <span class="idap-field-span" style="font-family: Arial; font-size: 13px; border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 220px); text-align: left; color: #000; padding: 0px 0;">{{ $yearsInPosition !== null ? $yearsInPosition . ' years' : '' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -707,47 +509,50 @@
                                     $allObjectives = ($idapObjectives ?? $objectives)->toArray();
                                     $objectivesPerPage = 3;
                                     $paginatedObjectives = array_chunk($allObjectives, $objectivesPerPage);
+                                    if (empty($paginatedObjectives)) {
+                                        $paginatedObjectives = [[]];
+                                    }
                                 @endphp
 
                                 <!-- First Page Table -->
-                                @if(isset($paginatedObjectives[0]))
+                                @if(isset($paginatedObjectives[0]) || count($paginatedObjectives) > 0)
                                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
                                         <thead>
                                             <tr style="background-color: #fff;">
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET - L&D PLAN</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
                                             </tr>
                                             <tr style="background-color: #f9f9f9;">
-                                                <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                                <th colspan="3" style="border: 1px solid #000; padding: 10px 3px;"></th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($paginatedObjectives[0] as $objective)
                                                 <tr>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['objective'], 35) }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['action_plan'], 35) }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center; color: #333;">
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000; word-break: break-word; overflow-wrap: break-word; white-space: normal;">{{ $objective['objective'] }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000; word-break: break-word; overflow-wrap: break-word; white-space: normal;">{{ $objective['action_plan'] }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">
                                                         @if(!empty($objective['budget_requirement']))
                                                             {{ number_format($objective['budget_requirement'], 2) }}
                                                         @else
                                                             __________
                                                         @endif
                                                     </td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q1' ? '☑' : '☐' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q1' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000; word-break: break-word; overflow-wrap: break-word; white-space: normal;">
                                                         @if(!empty($objective['support_required']))
-                                                            {{ Illuminate\Support\Str::limit($objective['support_required'], 20) }}
+                                                            {{ $objective['support_required'] }}
                                                         @else
                                                             __________
                                                         @endif
@@ -762,19 +567,22 @@
                                 @if(count($paginatedObjectives) == 1)
                                     <div style="page-break-inside: avoid; display: flex; justify-content: space-between; margin-top: 32px; font-size: 9px; gap: 40px;">
                                         <div style="flex: 1; text-align: left;">
-                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Prepared by:</p>
-                                            <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
+                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 8px 0;">Prepared by:</p>
+                                            <div style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 4px 0; width: 70%;">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->middle_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</div>
+                                            <div style="border-top: 1px solid #000; padding-top: 1px; width: 70%;"></div>
                                             <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Employee</p>
                                         </div>
                                         <div style="flex: 1; text-align: left;">
-                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Reviewed by:</p>
-                                            <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
-                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Department Chair / Immediate Supervisor</p>
+                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 8px 0;">Reviewed by:</p>
+                                            <div style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 4px 0; width: 70%;">{{ $departmentChair ? $departmentChair->first_name . ' ' . $departmentChair->last_name : '' }}</div>
+                                            <div style="border-top: 1px solid #000; padding-top: 1px; width: 70%;"></div>
+                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Department Chair / Immediate Supervisor</p>
                                         </div>
                                         <div style="flex: 1; text-align: left;">
-                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Approved by:</p>
-                                            <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
-                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Dean/Director/Unit Head</p>
+                                            <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 8px 0;">Approved by:</p>
+                                            <div style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 4px 0; width: 70%;">Willie</div>
+                                            <div style="border-top: 1px solid #000; padding-top: 1px; width: 70%;"></div>
+                                            <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Dean/Director/Unit Head</p>
                                         </div>
                                     </div>
                                 @endif
@@ -819,7 +627,7 @@
                                                         <polygon points="50,15 85,50 50,85 15,50" fill="#a8d5a8" stroke="none"/>
                                                         <circle cx="50" cy="45" r="8" fill="#f5b041"/>
                                                         <path d="M 50 30 Q 45 35 45 42 Q 45 50 50 55 Q 55 50 55 42 Q 55 35 50 30" fill="#ff8c00"/>
-                                                        <circle cx="50" cy="38" r="5" fill="#ffd700"/>
+                                                        <circle cx="50" cy="38" r="5" fill="#ffd700"/>line
                                                     </svg>
                                                 @endif
                                             </div>
@@ -861,7 +669,7 @@
                                         </div>
 
                                         <!-- Document Title -->
-                                        <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 13px; letter-spacing: 0.5px;">INDIVIDUAL DEVELOPMENT AND ACTION PLAN</h2>
+                                        <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 15px; letter-spacing: 0.5px;">INDIVIDUAL DEVELOPMENT AND ACTION PLAN</h2>
                                         <div style="text-align: center; margin-bottom: 12px; font-size: 11px;">
                                             <span style="font-family: Arial; font-weight: bold; color: #000;">{{ $displayYear }}</span>
                                         </div>
@@ -869,41 +677,41 @@
                                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
                                         <thead>
                                             <tr style="background-color: #fff;">
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET - L&D PLAN</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
                                             </tr>
                                             <tr style="background-color: #f9f9f9;">
-                                                <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                                <th colspan="3" style="border: 1px solid #000; padding: 10px 3px;"></th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @if(count($pageObjectives) > 0)
                                                 @foreach($pageObjectives as $objective)
                                                     <tr>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['objective'], 35) }}</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">{{ Illuminate\Support\Str::limit($objective['action_plan'], 35) }}</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center; color: #333;">
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000; word-break: break-word; overflow-wrap: break-word; white-space: normal;">{{ $objective['objective'] }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000; word-break: break-word; overflow-wrap: break-word; white-space: normal;">{{ $objective['action_plan'] }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">
                                                             @if(!empty($objective['budget_requirement']))
                                                                 {{ number_format($objective['budget_requirement'], 2) }}
                                                             @else
                                                                 __________
                                                             @endif
                                                         </td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q1' ? '☑' : '☐' }}</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px; text-align: left; color: #333;">
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q1' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000; word-break: break-word; overflow-wrap: break-word; white-space: normal;">
                                                             @if(!empty($objective['support_required']))
-                                                                {{ Illuminate\Support\Str::limit($objective['support_required'], 20) }}
+                                                                {{ $objective['support_required'] }}
                                                             @else
                                                                 __________
                                                             @endif
@@ -913,14 +721,14 @@
                                             @else
                                                 @for($i = 1; $i <= 3; $i++)
                                                     <tr>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">{{ $i }}. ___________________________</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">___________________________</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #000;">{{ $i }}. ___________________________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #000;">___________________________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
                                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
-                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
                                                     </tr>
                                                 @endfor
                                             @endif
@@ -931,19 +739,22 @@
                                     @if($pageIndex == count($paginatedObjectives) - 1)
                                         <div style="page-break-inside: avoid; display: flex; justify-content: space-between; margin-top: 32px; font-size: 9px; gap: 40px;">
                                             <div style="flex: 1; text-align: left;">
-                                                <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Prepared by:</p>
-                                                <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
-                                                <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Employee</p>
+                                                <p style="font-family: Arial; font-size: 15px; color: #000; margin: 0 0 8px 0;">Prepared by:</p>
+                                                <div style="font-family: Arial; font-size: 15px; color: #000; margin: 0 0 4px 0; width: 70%;">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->middle_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</div>
+                                                <div style="border-top: 1px solid #000; padding-top: 2px; width: 70%;"></div>
+                                                <p style="font-family: Arial; font-size: 15px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Employee</p>
                                             </div>
                                             <div style="flex: 1; text-align: left;">
-                                                <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Reviewed by:</p>
-                                                <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
-                                                <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Department Chair / Immediate Supervisor</p>
+                                                <p style="font-family: Arial; font-size: 15px; color: #000; margin: 0 0 8px 0;">Reviewed by:</p>
+                                                <div style="font-family: Arial; font-size: 15px; color: #000; margin: 0 0 4px 0; width: 70%;">{{ $departmentChair ? $departmentChair->first_name . ' ' . $departmentChair->last_name : '' }}</div>
+                                                <div style="border-top: 1px solid #000; padding-top: 1px; width: 70%;"></div>
+                                                <p style="font-family: Arial; font-size: 15px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Department Chair / Immediate Supervisor</p>
                                             </div>
                                             <div style="flex: 1; text-align: left;">
-                                                <p style="font-family: Arial; font-size: 13px; color: #000; margin: 0 0 35px 0;">Approved by:</p>
-                                                <div style="border-top: 1px solid #000; padding-top: 0px; width: 70%;"></div>
-                                                <p style="font-family: Arial; font-size: 13px; font-weight: normal; color: #000; margin: 0px 0 0 0; line-height: 1.2;">Dean/Director/Unit Head</p>
+                                                <p style="font-family: Arial; font-size: 15px; color: #000; margin: 0 0 8px 0;">Approved by:</p>
+                                                <div style="font-family: Arial; font-size: 15px; color: #000; margin: 0 0 4px 0; width: 70%;">Willie</div>
+                                                <div style="border-top: 1px solid #000; padding-top: 1px; width: 70%;"></div>
+                                                <p style="font-family: Arial; font-size: 15px; font-weight: normal; color: #000; margin: 0px 0 0 0;">Dean/Director/Unit Head</p>
                                             </div>
                                         </div>
                                         
@@ -961,11 +772,11 @@
                                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
                                         <thead>
                                             <tr style="background-color: #fff;">
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; width: 18%; color: #000; font-size: 13px; font-weight: normal;">DEVELOPMENT OBJECTIVES / TARGET</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal;">ACTION PLAN AND STRATEGIES</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal;">BUDGET REQUIREMENT</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; font-size: 13px; font-weight: normal;" colspan="4">TARGET PERIOD</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal;">SUPPORT REQUIRED</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 8px 3px; text-align: center; vertical-align: top; width: 18%; color: #000; font-size: 13px; font-weight: normal;">DEVELOPMENT OBJECTIVES / TARGET</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 8px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 18%; color: #000; font-size: 13px; font-weight: normal;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 8px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 11%; color: #000; font-size: 13px; font-weight: normal;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; vertical-align: top; font-weight: bold; color: #000; font-size: 13px; font-weight: normal;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; vertical-align: top; font-weight: bold; width: 15%; color: #000; font-size: 13px; font-weight: normal;">SUPPORT REQUIRED</th>
                                             </tr>
                                             <tr style="background-color: #f9f9f9;">
                                                 <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
@@ -979,14 +790,14 @@
                                         <tbody>
                                             @for($i = 1; $i <= 3; $i++)
                                                 <tr>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">{{ $i }}. ___________________________</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">___________________________</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #000;">{{ $i }}. ___________________________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #000;">___________________________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
                                                 </tr>
                                             @endfor
                                         </tbody>
@@ -1000,9 +811,9 @@
                         <div class="bg-white border-t border-gray-200 p-4 flex items-center justify-center gap-3 sticky bottom-0">
                             <button id="printIdapButton" class="btn-primary text-white px-6 py-2 rounded hover:bg-orange-600 transition flex items-center gap-2">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H7a2 2 0 01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2zm0 0h2a2 2 0 002-2m0 0V9" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Print
+                                Download
                             </button>
                             <button id="closeIdapModal2" class="btn-danger text-white px-6 py-2 rounded hover:bg-red-700 transition flex items-center gap-2" style="background-color: #6b7280;">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -1013,11 +824,123 @@
                         </div>
                     </div>
                 </div>
+                <div id="editFormModal" class="fixed inset-0 z-50 flex items-center justify-center hidden" aria-modal="true" role="dialog">
+                    <!-- Backdrop -->
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeEditForm()"></div>
+                    <!-- Dialog panel -->
+                    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto animate-modal">
+                        <!-- Close button -->
+                        <button type="button" onclick="closeEditForm()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                        <div class="p-8">
+                            <!-- Header -->
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-orange-600 flex-shrink-0">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-lg font-bold text-gray-800">Edit L&amp;D Form</h2>
+                                    <p class="text-xs text-gray-500 mt-0.5">Update your learning &amp; development details</p>
+                                </div>
+                            </div>
+                            <!-- Form -->
+                            <form id="editLndForm" method="POST" action="#">
+                                @csrf
+                                <input type="hidden" id="edit_objective_id" name="objective_id" value="">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="lnd_type" class="block text-sm font-semibold text-gray-700 mb-1.5">Type of L&amp;D</label>
+                                        <input
+                                            type="text"
+                                            id="lnd_type"
+                                            name="lnd_type"
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-orange-50 text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                                            placeholder="Enter type of L&D (e.g., training, short courses)..."
+                                        >
+                                    </div>
+                                    <div>
+                                        <label for="lnd_title" class="block text-sm font-semibold text-gray-700 mb-1.5">Title</label>
+                                        <input
+                                            type="text"
+                                            id="lnd_title"
+                                            name="lnd_title"
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-orange-50 text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                                            placeholder="Enter the title of the activity..."
+                                        >
+                                    </div>
+                                    <div>
+                                        <label for="lnd_period_date" class="block text-sm font-semibold text-gray-700 mb-1.5">Period Date</label>
+                                        <input
+                                            type="text"
+                                            id="lnd_period_date"
+                                            name="lnd_period_date"
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-orange-50 text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                                            placeholder="e.g., January - March 2026"
+                                        >
+                                    </div>
+                                    <div>
+                                        <label for="lnd_hours" class="block text-sm font-semibold text-gray-700 mb-1.5">Hours/Units Completed</label>
+                                        <input
+                                            type="number"
+                                            id="lnd_hours"
+                                            name="lnd_hours"
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-orange-50 text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                                            placeholder="Enter hours or units"
+                                            min="0"
+                                            step="0.5"
+                                        >
+                                    </div>
+                                    <div>
+                                        <label for="lnd_proof_completion" class="block text-sm font-semibold text-gray-700 mb-1.5">Proof of Completion</label>
+                                        <input
+                                            type="text"
+                                            id="lnd_proof_completion"
+                                            name="lnd_proof_completion"
+                                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-orange-50 text-gray-700 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                                            placeholder="Enter proof of completion details..."
+                                        >
+                                    </div>
+                                </div>
+                                <button
+                                    type="submit"
+                                    onclick="saveEditForm(event)"
+                                    class="mt-6 w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition shadow-sm"
+                                >
+                                    Save Changes
+                                </button>
+                                <button
+                                    type="button"
+                                    onclick="closeEditForm()"
+                                    class="mt-2 w-full py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50 transition font-medium"
+                                >
+                                    Cancel
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function updateTime() {
+            var now = new Date();
+            var h = now.getHours();
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            var m = now.getMinutes().toString().padStart(2,'0');
+            var s = now.getSeconds().toString().padStart(2,'0');
+            document.getElementById('live-time').textContent = h+':'+m+':'+s+' '+ampm;
+        }
+        updateTime(); setInterval(updateTime, 1000);
+    </script>
 </body>
 </html>
 
@@ -1082,11 +1005,92 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function openEditForm(objectiveId) {
+    const modal = document.getElementById('editFormModal');
+    const objectiveInput = document.getElementById('edit_objective_id');
+
+    if (objectiveInput) {
+        objectiveInput.value = objectiveId || '';
+    }
+
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function closeEditForm() {
+    const modal = document.getElementById('editFormModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function saveEditForm(event) {
+    event.preventDefault();
+
+    const objectiveId = document.getElementById('edit_objective_id').value;
+    const lndType = document.getElementById('lnd_type').value;
+    const lndTitle = document.getElementById('lnd_title').value;
+    const lndPeriodDate = document.getElementById('lnd_period_date').value;
+    const lndHours = document.getElementById('lnd_hours').value;
+    const lndProofCompletion = document.getElementById('lnd_proof_completion').value;
+
+    if (!lndType || !lndTitle || !lndPeriodDate || !lndHours || !lndProofCompletion) {
+        alert('Please fill in all fields');
+        return;
+    }
+
+    // Submit to backend
+    fetch(`/development-objectives/${objectiveId}/lnd-data`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            lnd_type: lndType,
+            lnd_title: lndTitle,
+            lnd_period_date: lndPeriodDate,
+            lnd_hours: lndHours,
+            lnd_proof_completion: lndProofCompletion
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('L&D data saved successfully! The data will appear in the Summary of L&D page.');
+            closeEditForm();
+            document.getElementById('editLndForm').reset();
+            // Optionally reload the page to show updated data
+            window.location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while saving the data.');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const editFormModal = document.getElementById('editFormModal');
+
+    if (!editFormModal) {
+        return;
+    }
+
+    editFormModal.addEventListener('click', (event) => {
+        if (event.target === editFormModal) {
+            closeEditForm();
+        }
+    });
+});
+
 // IDAP Modal functionality
 document.addEventListener('DOMContentLoaded', () => {
     const idapModal = document.getElementById('idapModal');
     const openIdapModal = document.getElementById('openIdapModal');
-    const closeIdapModal = document.getElementById('closeIdapModal');
     const closeIdapModal2 = document.getElementById('closeIdapModal2');
     const printIdapButton = document.getElementById('printIdapButton');
     const idapYearSelect = document.getElementById('idapYearSelect');
@@ -1117,7 +1121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         idapModal.classList.add('hidden');
     };
 
-    closeIdapModal.addEventListener('click', closeModal);
     closeIdapModal2.addEventListener('click', closeModal);
 
     // Close modal when clicking outside
@@ -1127,109 +1130,105 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Print functionality - open new window with document content and all styles
-    printIdapButton.addEventListener('click', () => {
-        const documentContent = document.getElementById('idapDocument').innerHTML;
-        const printWindow = window.open('', '_blank', 'width=1100,height=800');
-        
-        printWindow.document.write(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Individual Development and Action Plan</title>
-    <script src="https://cdn.tailwindcss.com"><\/script>
-    <style>
-        @page {
-            size: landscape;
-            margin: 1in 1in 0.3in 1in;
-        }
-        
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            box-sizing: border-box;
-        }
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            font-family: Arial, sans-serif;
-        }
-        
-        /* A4 Page Container Styles - screen view */
-        .a4-page {
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 1056px;
-            margin: 0 auto 30px auto;
-            background-color: white;
-            padding: 96px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .page-content-body {
-            flex: 1;
+    // Download functionality - render each .a4-page as its own PDF page
+    printIdapButton.addEventListener('click', async () => {
+        const docEl = document.getElementById('idapDocument');
+        const yearVal = document.getElementById('idapYearSelect') ? document.getElementById('idapYearSelect').value : 'IDAP';
+
+        printIdapButton.disabled = true;
+        printIdapButton.textContent = 'Generating...';
+
+        // Temporarily remove modal overflow clipping
+        const modalScroller = document.querySelector('#idapModal > div');
+        const savedOverflow  = modalScroller ? modalScroller.style.overflow  : '';
+        const savedMaxHeight = modalScroller ? modalScroller.style.maxHeight : '';
+        if (modalScroller) {
+            modalScroller.style.overflow  = 'visible';
+            modalScroller.style.maxHeight = 'none';
         }
 
-        .page-footer-ref {
-            margin-top: auto;
+        const CAPTURE_WIDTH = 1122;
+
+        try {
+            const pages = Array.from(docEl.querySelectorAll('.a4-page'));
+            if (pages.length === 0) return;
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+            const pdfW = pdf.internal.pageSize.getWidth();
+            const pdfH = pdf.internal.pageSize.getHeight();
+
+            for (let i = 0; i < pages.length; i++) {
+                if (i > 0) pdf.addPage();
+
+                // Force A4-landscape width so capture matches the real form width
+                const prevStyle = pages[i].getAttribute('style') || '';
+                pages[i].style.width    = CAPTURE_WIDTH + 'px';
+                pages[i].style.minWidth = CAPTURE_WIDTH + 'px';
+                pages[i].style.maxWidth = CAPTURE_WIDTH + 'px';
+
+                // Force Arial 13px on table cells — overrides the table-level font-size: 9px
+                // so html2canvas renders them at the intended 13px, matching header/signature text
+                const allCells = pages[i].querySelectorAll('table td, table th');
+                const prevFontFamily = Array.from(allCells).map(c => c.style.fontFamily);
+                const prevFontSize   = Array.from(allCells).map(c => c.style.fontSize);
+                allCells.forEach(c => { c.style.fontFamily = 'Arial'; c.style.fontSize = '13px'; });
+
+                // Patch field underline spans so border-bottom appears below text in PDF
+                const fieldSpans = pages[i].querySelectorAll('.idap-field-span');
+                const prevFieldPadding = Array.from(fieldSpans).map(s => s.style.paddingBottom);
+                fieldSpans.forEach(s => { s.style.paddingBottom = '6px'; });
+
+                pages[i].scrollIntoView({ block: 'start' });
+                await new Promise(r => setTimeout(r, 150));
+
+                const canvas = await window.html2canvas(pages[i], {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth:  CAPTURE_WIDTH,
+                    width:        CAPTURE_WIDTH,
+                    imageTimeout: 0,
+                    removeContainer: true
+                });
+
+                pages[i].setAttribute('style', prevStyle);
+
+                // Restore table cell fonts
+                allCells.forEach((c, j) => { c.style.fontFamily = prevFontFamily[j]; c.style.fontSize = prevFontSize[j]; });
+
+                // Restore field span padding
+                fieldSpans.forEach((s, j) => { s.style.paddingBottom = prevFieldPadding[j]; });
+
+                // Fit proportionally — scale to fill width; if taller than page, scale down to fit height
+                // (prevents signature section from being clipped when content exceeds A4 landscape height)
+                const imgH_raw = (canvas.height / canvas.width) * pdfW;
+                let imgW = pdfW;
+                let imgH = imgH_raw;
+                if (imgH > pdfH) {
+                    const scaleDown = pdfH / imgH;
+                    imgW = pdfW * scaleDown;
+                    imgH = pdfH;
+                }
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.98), 'JPEG', (pdfW - imgW) / 2, 0, imgW, imgH);
+            }
+
+            pdf.save(`IDAP_${yearVal}.pdf`);
+        } catch (err) {
+            alert('Error generating PDF: ' + err.message);
+        } finally {
+            if (modalScroller) {
+                modalScroller.style.overflow  = savedOverflow;
+                modalScroller.style.maxHeight = savedMaxHeight;
+            }
+            printIdapButton.disabled = false;
+            printIdapButton.innerHTML = '<svg class="h-4 w-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Download';
         }
-        
-        .a4-page:last-child {
-            margin-bottom: 0;
-        }
-        
-        /* Print-specific overrides */
-        @media print {
-            body {
-                background-color: white;
-            }
-            
-            .a4-page {
-                margin: 0;
-                padding: 0;
-                max-width: 100%;
-                width: 100%;
-                min-height: 100vh;
-                box-shadow: none;
-                page-break-after: always;
-                break-after: page;
-            }
-            
-            .a4-page:last-child {
-                page-break-after: auto;
-                break-after: auto;
-            }
-            
-            table {
-                page-break-inside: avoid;
-                break-inside: avoid;
-                width: 100%;
-            }
-            
-            tr {
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
-        }
-    </style>
-</head>
-<body>
-    ${documentContent}
-</body>
-</html>`);
-        
-        printWindow.document.close();
-        
-        // Wait for Tailwind to load before printing
-        printWindow.onload = () => {
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
-        };
     });
 });
 </script>
+
+

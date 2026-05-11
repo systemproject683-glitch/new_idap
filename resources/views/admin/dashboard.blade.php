@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - IDAP System</title>
+    <title>Admin Dashboard - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             background-color: #fff7ed;
@@ -33,7 +35,7 @@
         }
         :root {
             --page-header-height: 84px;
-            --page-header-gap: 16px;
+            --page-header-gap: 6px;
         }
         .page-header-fixed {
             position: fixed;
@@ -70,6 +72,24 @@
             transform: scale(1.05);
             box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3) !important;
         }
+        .activity-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            border-radius: 8px;
+        }
+        .activity-card-link:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 24px rgba(255, 107, 53, 0.25) !important;
+        }
+        .activity-card-link:hover .activity-hover-hint {
+            opacity: 1;
+        }
+        .activity-hover-hint {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
         .a4-page {
             box-sizing: border-box;
             width: 100%;
@@ -77,7 +97,7 @@
             height: auto;
             margin: 0 auto 30px auto;
             background-color: white;
-            padding: 96px;
+            padding: 40px 96px 96px 96px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
             page-break-after: always;
@@ -108,8 +128,19 @@
             <div class="p-8 page-content">
             <!-- Header -->
             <div class="header-bar page-header-fixed">
-                <h1 class="text-2xl font-bold text-gray-800 mt-0">Admin Dashboard</h1>
-                <p class="text-gray-600 mt-1 mb-0 leading-tight">Welcome, {{ Auth::guard('admin')->user()->first_name }} {{ Auth::guard('admin')->user()->last_name }}!</p>
+                <div class="flex items-center justify-between h-full min-h-16">
+                    <div>
+                        <p class="text-gray-600 text-base">Admin / <span class="text-orange-600 font-semibold">Dashboard</span></p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                        <span class="text-gray-300 text-base">|</span>
+                        <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
+                    </div>
+                </div>
             </div>
             <div class="page-header-spacer"></div>
             <div class="px-5">
@@ -132,39 +163,49 @@
                     <p class="text-3xl font-bold text-green-500">{{ \DB::table('sessions')->count() }}</p>
                 </div>
                 <div class="card card-orange-shadow p-6 stat-card">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Development Objectives</h3>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Development Objectives - L&D Plan</h3>
                     <p class="text-3xl font-bold text-blue-500">{{ $totalDevelopmentObjectives }}</p>
                 </div>
             </div>
 
             <!-- Recent Activity and Department Distribution -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-stretch">
                 <!-- Recent Activity Card -->
-                <div class="card card-orange-shadow p-6">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
-                    <div class="space-y-4">
-                        @if($recentActivities->count() > 0)
-                            @foreach($recentActivities as $activity)
-                                <div class="flex items-start">
-                                    <div class="w-3 h-3 rounded-full bg-orange-500 mt-2 mr-4 flex-shrink-0"></div>
-                                    <div class="flex-1">
-                                        <p class="text-gray-800 text-sm">
-                                            <span class="font-semibold">{{ $activity['user'] }}</span> 
-                                            {{ $activity['action'] }}
-                                        </p>
-                                        <p class="text-gray-500 text-xs mt-1">
-                                            {{ $activity['time']->diffForHumans() }}
-                                        </p>
+                <a href="{{ route('admin.recent-activities') }}" class="activity-card-link h-full">
+                    <div class="card card-orange-shadow p-6 h-full flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-gray-800">Recent Activity</h2>
+                            <span class="activity-hover-hint flex items-center gap-1 text-xs text-orange-500 font-semibold">
+                                View all
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="space-y-4 flex-1 overflow-y-auto">
+                            @if($recentActivities->count() > 0)
+                                @foreach($recentActivities as $activity)
+                                    <div class="flex items-start">
+                                        <div class="w-3 h-3 rounded-full bg-orange-500 mt-2 mr-4 flex-shrink-0"></div>
+                                        <div class="flex-1">
+                                            <p class="text-gray-800 text-sm">
+                                                <span class="font-semibold">{{ $activity['user'] }}</span> 
+                                                {{ $activity['action'] }}
+                                            </p>
+                                            <p class="text-gray-500 text-xs mt-1">
+                                                {{ $activity['time']->diffForHumans() }}
+                                            </p>
+                                        </div>
                                     </div>
+                                @endforeach
+                            @else
+                                <div class="flex items-center justify-center flex-1 py-8">
+                                    <p class="text-gray-500">No recent activities</p>
                                 </div>
-                            @endforeach
-                        @else
-                            <div class="text-center py-8">
-                                <p class="text-gray-500">No recent activities</p>
-                            </div>
-                        @endif
+                            @endif
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- Department Distribution Card -->
                 <div class="card card-orange-shadow p-6">
@@ -217,13 +258,12 @@
                 <div id="facultyPlanDocument" style="width: 100%; display: flex; flex-direction: column; gap: 0;">
                     <!-- A4 Page -->
                     <div class="a4-page">
-                        <div class="page-content-body">
-                            <!-- Document Reference Number - Top Right -->
-                                <div class="page-header-ref text-right" style="font-family: Arial; font-size: 12px; font-style: italic; color: #999; margin-bottom: 4px;">
-                                    HRDO-QF-26
-                                </div>
+                        <!-- Document Reference Number - Top Right -->
+                        <div class="page-header-ref text-right" style="font-family: Arial; font-size: 12px; font-style: italic; color: #999; margin-bottom: 4px;">
+                            HRDO-QF-26
+                        </div>
 
-                                <div class="page-content-body">
+                        <div class="page-content-body">
 
                                 <!-- Header Section with Logos -->
                                 <div class="flex items-center justify-center mb-6 pb-4" style="border-bottom: 2px solid #666; gap: 2px; display: flex; align-items: flex-start; justify-content: center;">
@@ -260,7 +300,7 @@
                                         <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 1px 0; line-height: 1;">Indang, Cavite</p>
                                         <p style="font-family: Arial; font-size: 12px; color: #000000; margin: 0; line-height: 1;">(046) 483-9250</p>
                                         <a href="https://www.cvsu.edu.ph" style="font-family: Arial; font-size: 12px; font-style: italic; color: #2563eb; text-decoration: underline; margin: 0; display: block; line-height: 1;">www.cvsu.edu.ph</a>
-                                        <p style="font-family: Arial; font-size: 14px; font-weight: bold; color: #000000; margin-top: 30px;">HUMAN RESOURCE DEVELOPMENT OFFICE</p>
+                                        <p style="font-family: Arial; font-size: 15px; font-weight: bold; color: #000000; margin-top: 30px;">HUMAN RESOURCE DEVELOPMENT OFFICE</p>
                                     </div>
 
                                     <!-- Bagong Pilipinas Logo -->
@@ -300,7 +340,7 @@
                                 @endphp
 
                                 <!-- Document Title -->
-                                <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 13px; letter-spacing: 0.5px;">FACULTY AND STAFF DEVELOPMENT AND ACTION PLAN</h2>
+                                <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 15px; letter-spacing: 0.5px;">FACULTY AND STAFF DEVELOPMENT AND ACTION PLAN</h2>
                                 <div style="text-align: center; margin-bottom: 12px; font-size: 11px;">
                                     <span style="font-weight: bold; color: #000;">{{ $facultyPlanDisplayYear }}</span>
                                 </div>
@@ -310,35 +350,35 @@
                                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
                                         <thead>
                                             <tr style="background-color: #fff;">
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">NAME OF EMPLOYEES</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
-                                                <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET - L&D PLAN</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">NAME OF EMPLOYEES</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
+                                                <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
                                             </tr>
                                             <tr style="background-color: #f9f9f9;">
-                                                <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
-                                                <th style="border: 1px solid #000; padding: 4px 3px;"></th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
-                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                                <th colspan="3" style="border: 1px solid #000; padding: 10px 3px;"></th>
+                                                <th style="border: 1px solid #000; padding: 10px 3px;"></th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                                <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px;"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($paginatedObjectives[0] as $index => $objective)
                                                 <tr>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">{{ $index + 1 }}. {{ $objective['objective'] ?? '' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">{{ $objective['action_plan'] ?? '' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">{{ $index + 1 }}. {{ $objective['objective'] ?? '' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">{{ $objective['action_plan'] ?? '' }}</td>
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">
                                                         @php
                                                             $user = \App\Models\User::find($objective['user_id']);
                                                         @endphp
                                                         {{ $user->name ?? '' }}
                                                     </td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">
                                                         @if(!empty($objective['budget_requirement']))
                                                             {{ number_format($objective['budget_requirement'], 2) }}
                                                         @else
@@ -349,7 +389,7 @@
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
                                                     <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
-                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">
+                                                    <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">
                                                         @if(!empty($objective['support_required']))
                                                             {{ $objective['support_required'] }}
                                                         @else
@@ -378,12 +418,11 @@
                                     </div>
                                 @endif
 
-                            </div><!-- close page-content-body -->
+                        </div><!-- close page-content-body -->
 
-                            <!-- Footer -->
-                            <div class="page-footer-ref" style="font-family: Arial; font-size: 12px; text-align: right; margin-top: 20px; color: #999;">
-                                V02-2025-10-27
-                            </div>
+                        <!-- Footer -->
+                        <div class="page-footer-ref" style="font-family: Arial; font-size: 12px; text-align: right; margin-top: 20px; color: #999;">
+                            V02-2025-10-27
                         </div>
                     </div><!-- Close first page -->
 
@@ -462,43 +501,43 @@
                             </div>
 
                             <!-- Document Title -->
-                            <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 13px; letter-spacing: 0.5px;">FACULTY AND STAFF DEVELOPMENT AND ACTION PLAN</h2>
-                            <div style="text-align: center; margin-bottom: 12px; font-size: 11px;">
+                            <h2 style="font-family: Arial; text-align: center; font-weight: bold; color: #000; margin: 8px 0; font-size: 12px; letter-spacing: 0.5px;">FACULTY AND STAFF DEVELOPMENT AND ACTION PLAN</h2>
+                            <div style="text-align: center; margin-bottom: 12px; font-size: 12px;">
                                 <span style="font-weight: bold; color: #000;">{{ $facultyPlanDisplayYear }}</span>
                             </div>
                         
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 9px; border: 1px solid #000;">
                             <thead>
                                 <tr style="background-color: #fff;">
-                                    <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET</th>
-                                    <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
-                                    <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">NAME OF EMPLOYEES</th>
-                                    <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
-                                    <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
-                                    <th style="font-family: Arial; border: 1px solid #000; padding: 4px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
+                                    <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">DEVELOPMENT OBJECTIVES / TARGET - L&D PLAN</th>
+                                    <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">ACTION PLAN AND STRATEGIES</th>
+                                    <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">NAME OF EMPLOYEES</th>
+                                    <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">BUDGET REQUIREMENT</th>
+                                    <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;" colspan="4">TARGET PERIOD</th>
+                                    <th style="font-family: Arial; border: 1px solid #000; padding: 10px 3px; text-align: center; color: #000; font-size: 13px; font-weight: normal; line-height: 1.1;">SUPPORT REQUIRED</th>
                                 </tr>
                                 <tr style="background-color: #f9f9f9;">
-                                    <th colspan="3" style="border: 1px solid #000; padding: 4px 3px;"></th>
-                                    <th style="border: 1px solid #000; padding: 4px 3px;"></th>
-                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
-                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
-                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
-                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
-                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 4px 3px;"></th>
+                                    <th colspan="3" style="border: 1px solid #000; padding: 10px 3px;"></th>
+                                    <th style="border: 1px solid #000; padding: 10px 3px;"></th>
+                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q1</th>
+                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q2</th>
+                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q3</th>
+                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px; text-align: center; font-weight: bold; color: #000; width: 6%;">Q4</th>
+                                    <th style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 10px 3px;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($pageObjectives as $index => $objective)
                                     <tr>
-                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">{{ $startIndex + $index + 1 }}. {{ $objective['objective'] ?? '' }}</td>
-                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">{{ $objective['action_plan'] ?? '' }}</td>
-                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">
+                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">{{ $startIndex + $index + 1 }}. {{ $objective['objective'] ?? '' }}</td>
+                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">{{ $objective['action_plan'] ?? '' }}</td>
+                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">
                                             @php
                                                 $user = \App\Models\User::find($objective['user_id']);
                                             @endphp
                                             {{ $user->name ?? '' }}
                                         </td>
-                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">
+                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">
                                             @if(!empty($objective['budget_requirement']))
                                                 {{ number_format($objective['budget_requirement'], 2) }}
                                             @else
@@ -509,7 +548,7 @@
                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q2' ? '☑' : '☐' }}</td>
                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q3' ? '☑' : '☐' }}</td>
                                         <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">{{ ($objective['target_period'] ?? '') === 'Q4' ? '☑' : '☐' }}</td>
-                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #333;">
+                                        <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: left; color: #000;">
                                             @if(!empty($objective['support_required']))
                                                 {{ $objective['support_required'] }}
                                             @else
@@ -571,15 +610,15 @@
                                     <tbody>
                                         @for($i = 1; $i <= 3; $i++)
                                             <tr>
-                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">{{ $i }}. ___________________________</td>
-                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #333;">___________________________</td>
-                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
-                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #000;">{{ $i }}. ___________________________</td>
+                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; color: #000;">___________________________</td>
+                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
+                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
                                                 <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                 <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                 <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
                                                 <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center;">☐</td>
-                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #333;">__________</td>
+                                                <td style="font-family: Arial; font-size: 13px; border: 1px solid #000; padding: 8px 4px; text-align: center; color: #000;">__________</td>
                                             </tr>
                                         @endfor
                                     </tbody>
@@ -601,9 +640,9 @@
                 </button>
                 <button id="printFacultyPlanBtn" class="btn-primary text-white px-6 py-2 rounded hover:bg-orange-600 transition flex items-center gap-2">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4H9a2 2 0 00-2 2v2a2 2 0 002 2h6a2 2 0 002-2v-2a2 2 0 00-2-2zm-6-4a2 2 0 100-4 2 2 0 000 4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    Print
+                    Download
                 </button>
             </div>
         </div>
@@ -632,7 +671,7 @@
                         borderWidth: 1
                     },
                     {
-                        label: 'Development Objectives',
+                        label: 'Development Objectives - L&D Plan',
                         data: objectivesData,
                         backgroundColor: '#f97316',
                         borderColor: '#c2410c',
@@ -722,118 +761,107 @@
         }
 
         if (printFacultyPlanBtn) {
-            printFacultyPlanBtn.addEventListener('click', () => {
-                const documentTarget = document.getElementById('facultyPlanDocument');
-                if (!documentTarget) {
-                    return;
+            printFacultyPlanBtn.addEventListener('click', async () => {
+                const docEl = document.getElementById('facultyPlanDocument');
+                if (!docEl) return;
+
+                const yearVal = document.getElementById('facultyPlanYearSelect')
+                    ? document.getElementById('facultyPlanYearSelect').value
+                    : 'FacultyPlan';
+
+                printFacultyPlanBtn.disabled = true;
+                printFacultyPlanBtn.textContent = 'Generating...';
+
+                // Temporarily hide modal chrome so only the white form is captured
+                const modal = document.getElementById('facultyPlanModal');
+                const modalInner = modal ? modal.firstElementChild : null;
+                const prevModalBg = modal ? modal.style.background : '';
+                const prevInnerBg = modalInner ? modalInner.style.background : '';
+                if (modal) modal.style.background = 'transparent';
+                if (modalInner) modalInner.style.background = 'transparent';
+
+                try {
+                    const pages = Array.from(docEl.querySelectorAll('.a4-page'));
+                    if (pages.length === 0) return;
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+                    const pdfW = pdf.internal.pageSize.getWidth();
+                    const pdfH = pdf.internal.pageSize.getHeight();
+                    const CAPTURE_WIDTH = 1122;
+
+                    for (let i = 0; i < pages.length; i++) {
+                        if (i > 0) pdf.addPage();
+
+                        const el = pages[i];
+                        const prevStyle = el.getAttribute('style') || '';
+                        const yearWrap = el.querySelector('div[style*="margin-bottom: 12px"]');
+                        const firstTable = el.querySelector('table');
+                        const prevYearMarginTop = yearWrap ? yearWrap.style.marginTop : '';
+                        const prevTableMarginTop = firstTable ? firstTable.style.marginTop : '';
+
+                        el.style.width = CAPTURE_WIDTH + 'px';
+                        el.style.minWidth = CAPTURE_WIDTH + 'px';
+                        el.style.maxWidth = CAPTURE_WIDTH + 'px';
+
+                        // Download-only spacing tweaks for admin form layout.
+                        if (yearWrap) yearWrap.style.marginTop = '-4px';
+                        if (firstTable) firstTable.style.marginTop = '8px';
+
+                        el.scrollIntoView({ block: 'start' });
+                        await new Promise(r => setTimeout(r, 150));
+
+                        const canvas = await window.html2canvas(el, {
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: true,
+                            backgroundColor: '#ffffff',
+                            logging: false,
+                            scrollX: 0,
+                            scrollY: -window.scrollY,
+                            windowWidth: CAPTURE_WIDTH,
+                            width: CAPTURE_WIDTH,
+                            imageTimeout: 0,
+                            removeContainer: true,
+                            onclone: (clonedDoc) => {
+                                // In the clone, strip modal overlay background
+                                const clonedModal = clonedDoc.getElementById('facultyPlanModal');
+                                if (clonedModal) clonedModal.style.background = 'transparent';
+                            }
+                        });
+
+                        if (yearWrap) yearWrap.style.marginTop = prevYearMarginTop;
+                        if (firstTable) firstTable.style.marginTop = prevTableMarginTop;
+                        el.setAttribute('style', prevStyle);
+
+                        const imgW = pdfW;
+                        const imgH = (canvas.height / canvas.width) * pdfW;
+                        pdf.addImage(canvas.toDataURL('image/jpeg', 0.98), 'JPEG', 0, 0, imgW, Math.min(imgH, pdfH));
+                    }
+
+                    pdf.save(`Faculty_Staff_Development_Plan_${yearVal}.pdf`);
+                } catch (err) {
+                    alert('Error generating PDF: ' + err.message);
+                } finally {
+                    if (modal) modal.style.background = prevModalBg;
+                    if (modalInner) modalInner.style.background = prevInnerBg;
+                    printFacultyPlanBtn.disabled = false;
+                    printFacultyPlanBtn.innerHTML = '<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Download';
                 }
-
-                const documentContent = documentTarget.innerHTML;
-                const printWindow = window.open('', '_blank', 'width=1100,height=800');
-
-                if (!printWindow) {
-                    return;
-                }
-
-                printWindow.document.write(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Faculty and Staff Development and Action Plan</title>
-    <script src="https://cdn.tailwindcss.com"><\/script>
-    <style>
-        @page {
-            size: landscape;
-            margin: 1in 1in 0.3in 1in;
-        }
-
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            font-family: Arial, sans-serif;
-        }
-
-        /* A4 Page Container Styles - screen view */
-        .a4-page {
-            box-sizing: border-box;
-            width: 100%;
-            max-width: 1056px;
-            margin: 0 auto 30px auto;
-            background-color: white;
-            padding: 96px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .page-content-body {
-            flex: 1;
-        }
-
-        .page-footer-ref {
-            margin-top: auto;
-        }
-
-        .a4-page:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Print-specific overrides */
-        @media print {
-            body {
-                background-color: white;
-            }
-
-            .a4-page {
-                margin: 0;
-                padding: 0;
-                max-width: 100%;
-                width: 100%;
-                min-height: 100vh;
-                box-shadow: none;
-                page-break-after: always;
-                break-after: page;
-            }
-
-            .a4-page:last-child {
-                page-break-after: auto;
-                break-after: auto;
-            }
-
-            table {
-                page-break-inside: avoid;
-                break-inside: avoid;
-                width: 100%;
-            }
-
-            tr {
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
-        }
-    </style>
-</head>
-<body>
-    ${documentContent}
-</body>
-</html>`);
-
-                printWindow.document.close();
-
-                printWindow.onload = () => {
-                    setTimeout(() => {
-                        printWindow.print();
-                    }, 500);
-                };
             });
         }
+    </script>
+    <script>
+        function updateTime() {
+            var now = new Date();
+            var h = now.getHours();
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            var m = now.getMinutes().toString().padStart(2,'0');
+            var s = now.getSeconds().toString().padStart(2,'0');
+            document.getElementById('live-time').textContent = h+':'+m+':'+s+' '+ampm;
+        }
+        updateTime(); setInterval(updateTime, 1000);
     </script>
 </body>
 </html>

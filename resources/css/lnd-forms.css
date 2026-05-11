@@ -1,0 +1,142 @@
+/* LND Forms Styles */
+body {
+    background-color: #fff7ed;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.btn-view {
+    background-color: #ff6b35;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-view:hover {
+    background-color: #e55a2b;
+    transform: scale(1.05);
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+/* Modal Styles */
+.lnd-modal-container {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #e5e7eb;
+    max-width: 1400px;
+}
+
+.a4-page {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1056px;
+    height: auto;
+    margin: 0 auto 30px auto;
+    background-color: white;
+    padding: 56px 56px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    page-break-after: always;
+    break-after: always;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content-body {
+    flex: 1;
+}
+
+.page-footer-ref {
+    margin-top: auto;
+}
+
+.a4-page:last-child {
+    margin-bottom: 0;
+    page-break-after: auto;
+    break-after: auto;
+}
+
+@media print {
+    @page {
+        size: landscape;
+        margin: 1in 1in 0.3in 1in;
+    }
+    
+    body {
+        background-color: white;
+    }
+    .modal-content {
+        background-color: white;
+    }
+    .print-container {
+        background-color: white;
+        padding: 0;
+    }
+    .a4-page {
+        box-shadow: none;
+        padding: 30px 40px;
+        max-width: 100%;
+        page-break-after: always;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 8px;
+    font-size: 11px;
+}
+
+th {
+    font-weight: bold;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+/* Print Container for Standalone Pages */
+.print-container {
+    background-color: #e5e7eb;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+/* Signature Section */
+.signature-section {
+    margin-top: 40px;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #ff6b35;
+}
+
+.btn-primary:hover {
+    background-color: #e55a2b;
+}

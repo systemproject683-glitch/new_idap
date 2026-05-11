@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Member Details - IDAP System</title>
+    <title>Faculty Member Details - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -46,6 +46,31 @@
             transition: stroke-dashoffset 0.35s;
             transform-origin: 50% 50%;
         }
+        .header-bar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        :root {
+            --page-header-height: 84px;
+            --page-header-gap: 16px;
+        }
+        .page-header-fixed {
+            position: fixed;
+            top: 0;
+            left: 256px;
+            right: 0;
+            z-index: 20;
+            margin: 0;
+            height: var(--page-header-height);
+        }
+        .page-content {
+            padding-top: 0;
+        }
+        .page-header-spacer {
+            height: calc(var(--page-header-height) + var(--page-header-gap));
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -55,20 +80,24 @@
 
         <!-- Main Content -->
         <div class="flex-1 ml-64 overflow-y-auto">
-            <div class="p-8">
+            <div class="p-8 page-content">
                 <!-- Header -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between">
+                <div class="header-bar page-header-fixed">
+                    <div class="flex items-center justify-between h-full min-h-16">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-800">Faculty Member Details</h1>
-                            <p class="text-gray-600 mt-2">View detailed information and objectives</p>
+                            <p class="text-gray-600 text-base">Chairperson / <span class="text-orange-600 font-semibold">Faculty Members</span></p>
                         </div>
-                        <a href="{{ route('chairperson.faculty-members') }}" 
-                           class="text-blue-600 hover:text-blue-800 font-medium">
-                            ← Back to Faculty Members
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                            <span class="text-gray-300 text-base">|</span>
+                            <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
+                        </div>
                     </div>
                 </div>
+                <div class="page-header-spacer"></div>
 
                 <!-- Faculty Member Info -->
                 <div class="card mb-8">
@@ -162,7 +191,7 @@
                 <!-- Objectives List -->
                 <div class="card">
                     <div class="p-6 border-b border-gray-200">
-                        <h2 class="text-xl font-semibold text-gray-800">Development Objectives</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">Development Objectives - L&D Plan</h2>
                     </div>
                     <div class="p-6">
                         @if($objectives->count() > 0)
@@ -197,7 +226,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2h10a2 2 0 002-2V6a2 2 0 00-2-2h-2M9 7a1 1 0 012 0v6a1 1 0 11-2 0V7z"></path>
                                     </svg>
                                 </div>
-                                <h3 class="text-lg font-medium text-gray-900 mb-2">No Development Objectives</h3>
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">No Development Objectives - L&D Plan</h3>
                                 <p class="text-gray-600">This faculty member hasn't created any development objectives yet.</p>
                             </div>
                         @endif

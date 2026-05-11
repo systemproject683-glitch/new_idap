@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Verification - IDAP System</title>
+    <title>File Verification - L&D Plan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -56,54 +56,58 @@
             background-color: #fee2e2;
             color: #991b1b;
         }
+        .header-bar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        :root {
+            --page-header-height: 84px;
+            --page-header-gap: 16px;
+        }
+        .page-header-fixed {
+            position: fixed;
+            top: 0;
+            left: 256px;
+            right: 0;
+            z-index: 20;
+            margin: 0;
+            height: var(--page-header-height);
+        }
+        .page-content {
+            padding-top: 0;
+        }
+        .page-header-spacer {
+            height: calc(var(--page-header-height) + var(--page-header-gap));
+        }
     </style>
 </head>
 <body class="min-h-screen">
     <div class="flex">
         <!-- Sidebar -->
         @include('chairperson.sidebar')
-        <div class="sidebar w-64 min-h-screen text-white fixed left-0 top-0">
-            <div class="p-6">
-                <h2 class="text-xl font-bold mb-6">Chairperson Panel</h2>
-                <nav>
-                    <a href="{{ route('chairperson.dashboard') }}" class="sidebar-item block px-4 py-3 rounded mb-2 transition">
-                        Dashboard
-                    </a>
-                    <a href="{{ route('chairperson.faculty-members') }}" class="sidebar-item block px-4 py-3 rounded mb-2 transition">
-                        Faculty Members
-                    </a>
-                    <a href="{{ route('chairperson.file-verification') }}" class="sidebar-item block px-4 py-3 rounded mb-2 transition bg-orange-600">
-                        File Verification
-                    </a>
-                    <a href="{{ route('chairperson.department-reports') }}" class="sidebar-item block px-4 py-3 rounded mb-2 transition">
-                        Department Reports
-                    </a>
-                    <form method="POST" action="{{ route('chairperson.logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="sidebar-item block w-full text-left px-4 py-3 rounded mb-2 transition">
-                            Logout
-                        </button>
-                    </form>
-                </nav>
-            </div>
-        </div>
 
         <!-- Main Content -->
         <div class="flex-1 ml-64 overflow-y-auto">
-            <div class="p-8">
+            <div class="p-8 page-content">
                 <!-- Header -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between">
+                <div class="header-bar page-header-fixed">
+                    <div class="flex items-center justify-between h-full min-h-16">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-800">File Verification</h1>
-                            <p class="text-gray-600 mt-2">Review and verify uploaded files from faculty members</p>
+                            <p class="text-gray-600 text-base">Chairperson / <span class="text-orange-600 font-semibold">File Verification</span></p>
                         </div>
-                        <a href="{{ route('chairperson.department-reports') }}" 
-                           class="text-blue-600 hover:text-blue-800 font-medium">
-                            ← Back to Department Reports
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 text-base">{{ now()->format('F d, Y') }}</p>
+                            <span class="text-gray-300 text-base">|</span>
+                            <span id="live-time" class="text-orange-500 font-semibold text-base"></span>
+                        </div>
                     </div>
                 </div>
+                <div class="page-header-spacer"></div>
 
                 <!-- Pending Files Table -->
                 <div class="card">

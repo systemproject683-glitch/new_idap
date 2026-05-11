@@ -9,6 +9,15 @@ class DevelopmentObjectiveFile extends Model
 {
     use HasFactory;
 
+    protected static function booting(): void
+    {
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (static::max('id') ?? 0) + 1;
+            }
+        });
+    }
+
     protected $fillable = [
         'development_objective_id',
         'file_path',
